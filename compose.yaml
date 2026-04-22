@@ -12,6 +12,7 @@ services:
       APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
       APP_URL: ${DOCKER_APP_URL:-http://localhost}
       LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_STACK: ${DOCKER_LOG_STACK:-stderr,single}
       LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
       DB_CONNECTION: ${DOCKER_DB_CONNECTION:-sqlite}
       DB_DATABASE: ${DOCKER_DB_DATABASE:-/var/lib/srhr/database.sqlite}
@@ -53,6 +54,7 @@ services:
       APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
       APP_URL: ${DOCKER_APP_URL:-http://localhost}
       LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_STACK: ${DOCKER_LOG_STACK:-stderr,single}
       LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
       DB_CONNECTION: ${DOCKER_DB_CONNECTION:-sqlite}
       DB_DATABASE: ${DOCKER_DB_DATABASE:-/var/lib/srhr/database.sqlite}
@@ -86,6 +88,7 @@ services:
       APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
       APP_URL: ${DOCKER_APP_URL:-http://localhost}
       LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_STACK: ${DOCKER_LOG_STACK:-stderr,single}
       LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
       DB_CONNECTION: ${DOCKER_DB_CONNECTION:-sqlite}
       DB_DATABASE: ${DOCKER_DB_DATABASE:-/var/lib/srhr/database.sqlite}

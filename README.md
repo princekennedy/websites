@@ -38,10 +38,17 @@ Notes:
 - The Docker deployment stores SQLite in the named volume `sqlite_data` at `/var/lib/srhr/database.sqlite`.
 - The `web` image is self-contained and runs both `php-fpm` and `nginx`, so it does not depend on a separate `app` hostname at runtime.
 - The default Docker env now seeds baseline CMS/app data on startup, which is useful for first-run SQLite deployments.
+- The sample Docker env enables `APP_DEBUG` and sends Laravel logs to both stderr and `storage/logs/laravel.log`, so container logs show the actual exception during debugging.
 - Uploaded media is persisted in the named Docker volume `storage_data`.
 - Static uploads are served by nginx through `/storage/`.
 - The queue worker and scheduler run as separate containers using the same application image.
 - For first deployment, replace the sample `DOCKER_APP_KEY` with a real key.
+
+To inspect runtime errors in Docker:
+
+1. Run `docker compose --env-file .env.docker.example logs -f web` to stream Laravel and nginx output from the web container.
+2. If you need the file-based Laravel log too, run `docker compose --env-file .env.docker.example exec web tail -f storage/logs/laravel.log`.
+3. After debugging, set `DOCKER_APP_DEBUG=false` again before treating the stack as production-like.
 
 ## About Laravel
 

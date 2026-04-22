@@ -28,17 +28,18 @@ Files added for deployment:
 
 Basic deployment flow:
 
-1. Set your environment values from `.env.docker.example`.
-2. Start the stack with `docker compose up --build -d`.
-3. The `app` service will run migrations automatically when `RUN_MIGRATIONS=true`.
-4. The public app will be available on `http://localhost` or the port set by `WEB_PORT`.
+1. Create a dedicated Docker env file from `.env.docker.example`.
+2. Start the stack with `docker compose --env-file .env.docker.example up --build -d`.
+3. The `app` service will run migrations automatically when `DOCKER_RUN_MIGRATIONS=true`.
+4. The public app will be available on `http://localhost` or the port set by `DOCKER_WEB_PORT`.
 
 Notes:
 
+- The compose stack uses `DOCKER_*` variables so it does not accidentally inherit your local Laravel `.env` values.
 - Uploaded media is persisted in the named Docker volume `storage_data`.
 - Static uploads are served by nginx through `/storage/`.
 - The queue worker and scheduler run as separate containers using the same application image.
-- For first deployment, replace the sample `APP_KEY` with a real key.
+- For first deployment, replace the sample `DOCKER_APP_KEY` with a real key.
 
 ## About Laravel
 

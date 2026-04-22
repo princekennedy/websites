@@ -6,28 +6,28 @@ services:
       target: app
     restart: unless-stopped
     environment:
-      APP_NAME: ${APP_NAME:-SRHR}
-      APP_ENV: ${APP_ENV:-production}
-      APP_DEBUG: ${APP_DEBUG:-false}
-      APP_KEY: ${APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
-      APP_URL: ${APP_URL:-http://localhost}
-      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
-      DB_CONNECTION: ${DB_CONNECTION:-mysql}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_DATABASE: ${DB_DATABASE:-srhr}
-      DB_USERNAME: ${DB_USERNAME:-srhr}
-      DB_PASSWORD: ${DB_PASSWORD:-secret}
-      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
-      CACHE_STORE: ${CACHE_STORE:-redis}
-      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      FILESYSTEM_DISK: ${FILESYSTEM_DISK:-public}
-      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
-      RUN_SEEDERS: ${RUN_SEEDERS:-false}
-      CACHE_LARAVEL_CONFIG: ${CACHE_LARAVEL_CONFIG:-true}
+      APP_NAME: ${DOCKER_APP_NAME:-SRHR}
+      APP_ENV: ${DOCKER_APP_ENV:-production}
+      APP_DEBUG: ${DOCKER_APP_DEBUG:-false}
+      APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
+      APP_URL: ${DOCKER_APP_URL:-http://localhost}
+      LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
+      DB_CONNECTION: ${DOCKER_DB_CONNECTION:-mysql}
+      DB_HOST: ${DOCKER_DB_HOST:-db}
+      DB_PORT: ${DOCKER_DB_PORT:-3306}
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-srhr}
+      DB_USERNAME: ${DOCKER_DB_USERNAME:-srhr}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-secret}
+      SESSION_DRIVER: ${DOCKER_SESSION_DRIVER:-redis}
+      CACHE_STORE: ${DOCKER_CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${DOCKER_QUEUE_CONNECTION:-redis}
+      REDIS_HOST: ${DOCKER_REDIS_HOST:-redis}
+      REDIS_PORT: ${DOCKER_REDIS_PORT:-6379}
+      FILESYSTEM_DISK: ${DOCKER_FILESYSTEM_DISK:-public}
+      RUN_MIGRATIONS: ${DOCKER_RUN_MIGRATIONS:-true}
+      RUN_SEEDERS: ${DOCKER_RUN_SEEDERS:-false}
+      CACHE_LARAVEL_CONFIG: ${DOCKER_CACHE_LARAVEL_CONFIG:-true}
     depends_on:
       db:
         condition: service_healthy
@@ -46,7 +46,7 @@ services:
       app:
         condition: service_started
     ports:
-      - "${WEB_PORT:-80}:80"
+      - "${DOCKER_WEB_PORT:-80}:80"
     volumes:
       - storage_data:/var/www/html/storage:ro
     healthcheck:
@@ -64,28 +64,28 @@ services:
     restart: unless-stopped
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=90"]
     environment:
-      APP_NAME: ${APP_NAME:-SRHR}
-      APP_ENV: ${APP_ENV:-production}
-      APP_DEBUG: ${APP_DEBUG:-false}
-      APP_KEY: ${APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
-      APP_URL: ${APP_URL:-http://localhost}
-      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
-      DB_CONNECTION: ${DB_CONNECTION:-mysql}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_DATABASE: ${DB_DATABASE:-srhr}
-      DB_USERNAME: ${DB_USERNAME:-srhr}
-      DB_PASSWORD: ${DB_PASSWORD:-secret}
-      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
-      CACHE_STORE: ${CACHE_STORE:-redis}
-      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      FILESYSTEM_DISK: ${FILESYSTEM_DISK:-public}
+      APP_NAME: ${DOCKER_APP_NAME:-SRHR}
+      APP_ENV: ${DOCKER_APP_ENV:-production}
+      APP_DEBUG: ${DOCKER_APP_DEBUG:-false}
+      APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
+      APP_URL: ${DOCKER_APP_URL:-http://localhost}
+      LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
+      DB_CONNECTION: ${DOCKER_DB_CONNECTION:-mysql}
+      DB_HOST: ${DOCKER_DB_HOST:-db}
+      DB_PORT: ${DOCKER_DB_PORT:-3306}
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-srhr}
+      DB_USERNAME: ${DOCKER_DB_USERNAME:-srhr}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-secret}
+      SESSION_DRIVER: ${DOCKER_SESSION_DRIVER:-redis}
+      CACHE_STORE: ${DOCKER_CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${DOCKER_QUEUE_CONNECTION:-redis}
+      REDIS_HOST: ${DOCKER_REDIS_HOST:-redis}
+      REDIS_PORT: ${DOCKER_REDIS_PORT:-6379}
+      FILESYSTEM_DISK: ${DOCKER_FILESYSTEM_DISK:-public}
       RUN_MIGRATIONS: "false"
       RUN_SEEDERS: "false"
-      CACHE_LARAVEL_CONFIG: ${CACHE_LARAVEL_CONFIG:-true}
+      CACHE_LARAVEL_CONFIG: ${DOCKER_CACHE_LARAVEL_CONFIG:-true}
     depends_on:
       db:
         condition: service_healthy
@@ -102,28 +102,28 @@ services:
     restart: unless-stopped
     command: ["sh", "-lc", "while true; do php artisan schedule:run --no-interaction -v; sleep 60; done"]
     environment:
-      APP_NAME: ${APP_NAME:-SRHR}
-      APP_ENV: ${APP_ENV:-production}
-      APP_DEBUG: ${APP_DEBUG:-false}
-      APP_KEY: ${APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
-      APP_URL: ${APP_URL:-http://localhost}
-      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
-      DB_CONNECTION: ${DB_CONNECTION:-mysql}
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_DATABASE: ${DB_DATABASE:-srhr}
-      DB_USERNAME: ${DB_USERNAME:-srhr}
-      DB_PASSWORD: ${DB_PASSWORD:-secret}
-      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
-      CACHE_STORE: ${CACHE_STORE:-redis}
-      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
-      REDIS_HOST: ${REDIS_HOST:-redis}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      FILESYSTEM_DISK: ${FILESYSTEM_DISK:-public}
+      APP_NAME: ${DOCKER_APP_NAME:-SRHR}
+      APP_ENV: ${DOCKER_APP_ENV:-production}
+      APP_DEBUG: ${DOCKER_APP_DEBUG:-false}
+      APP_KEY: ${DOCKER_APP_KEY:-base64:6f0w1+Rj0m9V7xw+LJdF0yk4s3eh4F6o2vJ5Qf8nJPo=}
+      APP_URL: ${DOCKER_APP_URL:-http://localhost}
+      LOG_CHANNEL: ${DOCKER_LOG_CHANNEL:-stack}
+      LOG_LEVEL: ${DOCKER_LOG_LEVEL:-info}
+      DB_CONNECTION: ${DOCKER_DB_CONNECTION:-mysql}
+      DB_HOST: ${DOCKER_DB_HOST:-db}
+      DB_PORT: ${DOCKER_DB_PORT:-3306}
+      DB_DATABASE: ${DOCKER_DB_DATABASE:-srhr}
+      DB_USERNAME: ${DOCKER_DB_USERNAME:-srhr}
+      DB_PASSWORD: ${DOCKER_DB_PASSWORD:-secret}
+      SESSION_DRIVER: ${DOCKER_SESSION_DRIVER:-redis}
+      CACHE_STORE: ${DOCKER_CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${DOCKER_QUEUE_CONNECTION:-redis}
+      REDIS_HOST: ${DOCKER_REDIS_HOST:-redis}
+      REDIS_PORT: ${DOCKER_REDIS_PORT:-6379}
+      FILESYSTEM_DISK: ${DOCKER_FILESYSTEM_DISK:-public}
       RUN_MIGRATIONS: "false"
       RUN_SEEDERS: "false"
-      CACHE_LARAVEL_CONFIG: ${CACHE_LARAVEL_CONFIG:-true}
+      CACHE_LARAVEL_CONFIG: ${DOCKER_CACHE_LARAVEL_CONFIG:-true}
     depends_on:
       db:
         condition: service_healthy
@@ -136,12 +136,12 @@ services:
     image: mariadb:11.4
     restart: unless-stopped
     environment:
-      MARIADB_DATABASE: ${DB_DATABASE:-srhr}
-      MARIADB_USER: ${DB_USERNAME:-srhr}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-secret}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
+      MARIADB_DATABASE: ${DOCKER_DB_DATABASE:-srhr}
+      MARIADB_USER: ${DOCKER_DB_USERNAME:-srhr}
+      MARIADB_PASSWORD: ${DOCKER_DB_PASSWORD:-secret}
+      MARIADB_ROOT_PASSWORD: ${DOCKER_DB_ROOT_PASSWORD:-root-secret}
     ports:
-      - "${DB_EXPOSE_PORT:-3306}:3306"
+      - "${DOCKER_DB_EXPOSE_PORT:-3306}:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -156,7 +156,7 @@ services:
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "${REDIS_EXPOSE_PORT:-6379}:6379"
+      - "${DOCKER_REDIS_EXPOSE_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:

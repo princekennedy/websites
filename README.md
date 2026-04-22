@@ -7,6 +7,39 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Docker Deployment
+
+This repository includes a production-oriented Docker stack built around:
+
+- `php-fpm` application container
+- `nginx` web container
+- `mariadb` database
+- `redis` cache and queue backend
+- dedicated `queue` and `scheduler` services
+
+Files added for deployment:
+
+- `Dockerfile`
+- `compose.yaml`
+- `.env.docker.example`
+- `docker/nginx/default.conf`
+- `docker/php/entrypoint.sh`
+- `docker/php/conf.d/app.ini`
+
+Basic deployment flow:
+
+1. Set your environment values from `.env.docker.example`.
+2. Start the stack with `docker compose up --build -d`.
+3. The `app` service will run migrations automatically when `RUN_MIGRATIONS=true`.
+4. The public app will be available on `http://localhost` or the port set by `WEB_PORT`.
+
+Notes:
+
+- Uploaded media is persisted in the named Docker volume `storage_data`.
+- Static uploads are served by nginx through `/storage/`.
+- The queue worker and scheduler run as separate containers using the same application image.
+- For first deployment, replace the sample `APP_KEY` with a real key.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

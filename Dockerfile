@@ -75,6 +75,7 @@ RUN apk add --no-cache \
 COPY --from=vendor /app /var/www/html
 COPY --from=assets /app/public/build /var/www/html/public/build
 COPY docker/php/conf.d/app.ini /usr/local/etc/php/conf.d/99-app.ini
+COPY docker/php/fpm.d/zz-app-debug.conf /usr/local/etc/php-fpm.d/zz-app-debug.conf
 COPY docker/php/entrypoint.sh /usr/local/bin/app-entrypoint
 
 RUN chmod +x /usr/local/bin/app-entrypoint \

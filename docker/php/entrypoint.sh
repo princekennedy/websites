@@ -13,17 +13,22 @@ if [ "${DB_CONNECTION:-}" = "sqlite" ] && [ -n "${DB_DATABASE:-}" ]; then
 fi
 
 if [ "${CACHE_LARAVEL_CONFIG:-true}" = "true" ]; then
-    php artisan config:cache >/dev/null 2>&1 || true
-    php artisan view:cache >/dev/null 2>&1 || true
+    echo "[entrypoint] caching Laravel config"
+    php artisan config:cache || true
+    echo "[entrypoint] caching Laravel views"
+    php artisan view:cache || true
 fi
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
     if [ "${RUN_SEEDERS:-false}" = "true" ]; then
+        echo "[entrypoint] running php artisan migrate --seed --force"
         php artisan migrate --seed --force
     else
+        echo "[entrypoint] running php artisan migrate --force"
         php artisan migrate --force
     fi
 elif [ "${RUN_SEEDERS:-false}" = "true" ]; then
+    echo "[entrypoint] running php artisan db:seed --force"
     php artisan db:seed --force
 fi
 

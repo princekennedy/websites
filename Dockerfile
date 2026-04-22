@@ -91,6 +91,6 @@ WORKDIR /var/www/html
 RUN apk add --no-cache nginx \
     && mkdir -p /run/nginx /var/lib/nginx/tmp /var/log/nginx
 
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
 CMD ["sh", "-lc", "php-fpm -D && exec nginx -g 'daemon off;'"]

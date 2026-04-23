@@ -34,21 +34,30 @@ class AppDataController extends Controller
         );
     }
 
-    public function bootstrap(): JsonResponse
+    public function bootstrap(Request $request): JsonResponse
     {
+        $allowedVisibilities = $this->allowedMenuVisibilities($request);
+        $allowedContentVisibilities = $this->allowedContentVisibilities($request);
+
         $menu = Menu::query()
-            ->with(['items.children'])
+            ->with([
+                'items' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->whereIn('visibility', $allowedVisibilities)
+                    ->orderBy('sort_order'),
+            ])
             ->where('location', 'public-primary')
             ->where('is_active', true)
+            ->whereIn('visibility', $allowedVisibilities)
             ->first();
 
-        $categories = $this->categoriesPayload();
-        $contents = $this->contentsPayload(limit: 8, includeBlocks: true);
-        $faqs = $this->faqsPayload();
+        $categories = $this->categoriesPayload($allowedContentVisibilities);
+        $contents = $this->contentsPayload($allowedContentVisibilities, limit: 8, includeBlocks: true);
+        $faqs = $this->faqsPayload($allowedContentVisibilities);
         $quizzes = Quiz::query()
             ->withCount('questions')
             ->where('status', 'published')
-            ->where('visibility', 'public')
+            ->whereIn('visibility', $allowedContentVisibilities)
             ->latest('published_at')
             ->limit(6)
             ->get()
@@ -61,7 +70,7 @@ class AppDataController extends Controller
                 'questions_count' => $quiz->questions_count,
                 'audience' => $quiz->audience,
             ])->values()->all();
-        $services = $this->serviceCentersPayload();
+        $services = $this->serviceCentersPayload($allowedContentVisibilities);
         $settings = AppSetting::query()
             ->where('is_public', true)
             ->orderBy('group')
@@ -79,7 +88,7 @@ class AppDataController extends Controller
             'menu' => [
                 'name' => $menu?->name,
                 'location' => $menu?->location,
-                'items' => $menu === null ? [] : $this->menuTree($menu->items->where('is_active', true)->where('visibility', 'public')),
+                'items' => $menu === null ? [] : $this->menuTree($menu->items),
             ],
             'hero_slides' => $this->heroSlidesPayload(),
             'categories' => $categories,
@@ -91,12 +100,18 @@ class AppDataController extends Controller
         ]);
     }
 
-    public function mainMenu(): JsonResponse
+    public function mainMenu(Request $request): JsonResponse
     {
+        $allowedVisibilities = $this->allowedMenuVisibilities($request);
+
         $menu = Menu::query()
-            ->with(['items' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order')])
+            ->with(['items' => fn ($query) => $query
+                ->where('is_active', true)
+                ->whereIn('visibility', $allowedVisibilities)
+                ->orderBy('sort_order')])
             ->where('location', 'public-primary')
             ->where('is_active', true)
+            ->whereIn('visibility', $allowedVisibilities)
             ->first();
 
         return $this->respond('Main menu loaded successfully.', $menu === null ? null : [
@@ -104,13 +119,13 @@ class AppDataController extends Controller
             'name' => $menu->name,
             'slug' => $menu->slug,
             'location' => $menu->location,
-            'items' => $this->menuTree($menu->items->where('visibility', 'public')),
+            'items' => $this->menuTree($menu->items),
         ]);
     }
 
     public function categories(): JsonResponse
     {
-        $categories = collect($this->categoriesPayload());
+        $categories = collect($this->categoriesPayload(['public']));
 
         return $this->respond('Categories loaded successfully.', $categories, ['count' => $categories->count()]);
     }
@@ -119,6 +134,7 @@ class AppDataController extends Controller
     {
         $limit = max(1, min($request->integer('limit', 12), 50));
         $contents = collect($this->contentsPayload(
+            ['public'],
             limit: $limit,
             includeBlocks: false,
             type: $request->string('type')->toString() ?: null,
@@ -171,6 +187,7 @@ class AppDataController extends Controller
     public function faqs(Request $request): JsonResponse
     {
         $faqs = collect($this->faqsPayload(
+            ['public'],
             audience: $request->string('audience')->toString() ?: null,
             category: $request->string('category')->toString() ?: null,
         ));
@@ -186,7 +203,7 @@ class AppDataController extends Controller
                 'questions.options' => fn ($query) => $query->orderBy('sort_order'),
             ])
             ->where('status', 'published')
-            ->where('visibility', 'public')
+            ->whereIn('visibility', ['public'])
             ->when($request->filled('audience'), fn ($query) => $query->where('audience', $request->string('audience')->toString()))
             ->orderBy('title')
             ->get()
@@ -219,6 +236,7 @@ class AppDataController extends Controller
     public function serviceCenters(Request $request): JsonResponse
     {
         $services = collect($this->serviceCentersPayload(
+            ['public'],
             district: $request->string('district')->toString() ?: null,
             audience: $request->string('audience')->toString() ?: null,
             featuredOnly: $request->boolean('featured'),
@@ -242,14 +260,14 @@ class AppDataController extends Controller
         ]);
     }
 
-    private function categoriesPayload(): array
+    private function categoriesPayload(array $allowedVisibilities): array
     {
         return ContentCategory::query()
             ->where('is_active', true)
             ->withCount([
                 'contents' => fn ($query) => $query
                     ->where('status', 'published')
-                    ->where('visibility', 'public'),
+                    ->whereIn('visibility', $allowedVisibilities),
             ])
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -329,7 +347,7 @@ class AppDataController extends Controller
         ];
     }
 
-    private function contentsPayload(int $limit = 12, bool $includeBlocks = false, ?string $type = null, ?string $audience = null, ?string $category = null, ?string $search = null): array
+    private function contentsPayload(array $allowedVisibilities, int $limit = 12, bool $includeBlocks = false, ?string $type = null, ?string $audience = null, ?string $category = null, ?string $search = null): array
     {
         return Content::query()
             ->with([
@@ -337,7 +355,7 @@ class AppDataController extends Controller
                 'blocks' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
             ])
             ->where('status', 'published')
-            ->where('visibility', 'public')
+            ->whereIn('visibility', $allowedVisibilities)
             ->when($type !== null, fn ($query) => $query->where('content_type', $type))
             ->when($audience !== null, fn ($query) => $query->where('audience', $audience))
             ->when($category !== null, function ($query) use ($category): void {
@@ -385,12 +403,12 @@ class AppDataController extends Controller
             })->values()->all();
     }
 
-    private function faqsPayload(?string $audience = null, ?string $category = null): array
+    private function faqsPayload(array $allowedVisibilities, ?string $audience = null, ?string $category = null): array
     {
         return Faq::query()
             ->with('category')
             ->where('is_published', true)
-            ->where('visibility', 'public')
+            ->whereIn('visibility', $allowedVisibilities)
             ->when($audience !== null, fn ($query) => $query->where('audience', $audience))
             ->when($category !== null, function ($query) use ($category): void {
                 $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $category));
@@ -408,12 +426,12 @@ class AppDataController extends Controller
             ])->values()->all();
     }
 
-    private function serviceCentersPayload(?string $district = null, ?string $audience = null, bool $featuredOnly = false): array
+    private function serviceCentersPayload(array $allowedVisibilities, ?string $district = null, ?string $audience = null, bool $featuredOnly = false): array
     {
         return ServiceCenter::query()
             ->with('category')
             ->where('is_active', true)
-            ->where('visibility', 'public')
+            ->whereIn('visibility', $allowedVisibilities)
             ->when($district !== null, fn ($query) => $query->where('district', $district))
             ->when($audience !== null, fn ($query) => $query->where('audience', $audience))
             ->when($featuredOnly, fn ($query) => $query->where('is_featured', true))
@@ -449,6 +467,22 @@ class AppDataController extends Controller
             'json' => json_decode($setting->value, true) ?? $setting->value,
             default => $setting->value,
         };
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedMenuVisibilities(Request $request): array
+    {
+        return $request->user() === null ? ['public'] : MenuItem::VISIBILITY_OPTIONS;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedContentVisibilities(Request $request): array
+    {
+        return $request->user() === null ? ['public'] : Content::VISIBILITY_OPTIONS;
     }
 
     private function menuTree($items, ?int $parentId = null): array

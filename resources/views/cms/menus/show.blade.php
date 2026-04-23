@@ -14,6 +14,7 @@
             <div>
                 <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Menu items</h3>
                 <p class="text-sm text-slate-500 dark:text-stone-400">Each item can target content, categories, routes, or externally managed web pages.</p>
+                <p class="mt-1 text-xs uppercase tracking-[0.15em] text-slate-400 dark:text-stone-500">Menu visibility: {{ ucfirst($menu->visibility ?: 'public') }}</p>
             </div>
             <a href="{{ route('cms.menus.items.create', $menu) }}" class="text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-300">Create item</a>
         </div>
@@ -38,7 +39,7 @@
                             </td>
                             <td class="px-4 py-3 uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ $item->type }}</td>
                             <td class="px-4 py-3 text-slate-500 dark:text-stone-400">{{ $item->target_reference ?: ($item->route ?: 'None') }}</td>
-                            <td class="px-4 py-3 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ $item->is_active ? 'Active' : 'Inactive' }}{{ $item->open_in_webview ? ' | WebView' : '' }}</td>
+                            <td class="px-4 py-3 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ ucfirst($item->visibility ?: 'public') }} | {{ $item->is_active ? 'Active' : 'Inactive' }}{{ $item->open_in_webview ? ' | WebView' : '' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ route('cms.menus.items.edit', [$menu, $item]) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-white/5 dark:text-stone-300 dark:hover:bg-white/10 dark:hover:text-white" title="Edit">

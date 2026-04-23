@@ -24,6 +24,7 @@ class MenuController extends Controller
     {
         return view('cms.menus.create', [
             'menu' => new Menu(),
+            'visibilityOptions' => Menu::VISIBILITY_OPTIONS,
         ]);
     }
 
@@ -50,6 +51,7 @@ class MenuController extends Controller
     {
         return view('cms.menus.edit', [
             'menu' => $menu,
+            'visibilityOptions' => Menu::VISIBILITY_OPTIONS,
         ]);
     }
 

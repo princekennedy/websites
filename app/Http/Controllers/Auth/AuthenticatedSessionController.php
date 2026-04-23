@@ -53,6 +53,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return match ($request->string('redirect_to')->toString()) {
+            'login' => redirect()->route('login')->with('status', 'Signed out successfully.'),
+            default => redirect()->route('home')->with('status', 'Signed out successfully.'),
+        };
     }
 }

@@ -58,7 +58,14 @@
           </svg>
         </button>
 
+        @auth
+        <form method="POST" action="{{ route('logout') }}" class="hidden md:block">
+          @csrf
+          <button type="submit" class="rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700">Logout</button>
+        </form>
+        @else
         <a href="/login" class="hidden rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 md:inline-flex">Login</a>
+        @endauth
 
         <button id="menuBtn" class="md:hidden rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +112,14 @@
           </details>
         @endif
       @endforeach
+      @auth
+      <form method="POST" action="{{ route('logout') }}" class="mt-2">
+        @csrf
+        <button type="submit" class="inline-flex w-full justify-center rounded-full bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">Logout</button>
+      </form>
+      @else
       <a href="/login" class="mt-2 inline-flex w-full justify-center rounded-full bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">Login</a>
+      @endauth
     </div>
   </div>
 </header>

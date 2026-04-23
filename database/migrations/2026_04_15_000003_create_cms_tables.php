@@ -40,6 +40,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('website_id')->constrained('websites')->cascadeOnDelete();
             $table->string('name');
+            $table->string('visibility', 20)->default('public');
             $table->string('slug');
             $table->text('description')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
@@ -96,6 +97,7 @@ return new class extends Migration
             $table->string('slug');
             $table->text('description')->nullable();
             $table->string('location', 80)->nullable();
+            $table->string('visibility', 20)->default('public');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 

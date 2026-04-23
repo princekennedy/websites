@@ -24,6 +24,14 @@
   @include('components.layouts.site-header')
 
   <main class="pt-[65px]">
+    @if (session('status'))
+      <div class="mx-auto max-w-7xl px-6 pt-6 lg:px-8">
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-100">
+          {{ session('status') }}
+        </div>
+      </div>
+    @endif
+
     {{ $slot }}
   </main>
 

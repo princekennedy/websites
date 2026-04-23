@@ -82,6 +82,7 @@
                     <option value="{{ $option }}" @selected(old('visibility', $item->visibility ?: 'public') === $option)>{{ ucfirst($option) }}</option>
                 @endforeach
             </select>
+            <p class="mt-2 text-sm text-stone-400">Public items are shown before login. Private and restricted items are shown only to logged-in users.</p>
         </div>
 
         <label class="flex items-center gap-3 rounded-2xl border border-white/10 bg-stone-950/40 px-4 py-3 text-sm text-stone-200">

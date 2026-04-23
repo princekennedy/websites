@@ -28,17 +28,20 @@ class PublicNavigation
             return collect();
         }
 
+        $allowedVisibilities = $this->allowedVisibilities();
+
         return Menu::query()
             ->withoutGlobalScope('website')
             ->where('website_id', $websiteId)
             ->where('location', $location)
             ->where('is_active', true)
+            ->whereIn('visibility', $allowedVisibilities)
             ->with([
                 'items' => fn ($query) => $query
                     ->withoutGlobalScope('website')
                     ->where('website_id', $websiteId)
                     ->where('is_active', true)
-                    ->where('visibility', 'public')
+                    ->whereIn('visibility', $allowedVisibilities)
                     ->orderBy('sort_order')
                     ->orderBy('title'),
             ])
@@ -101,21 +104,32 @@ class PublicNavigation
             return null;
         }
 
+        $allowedVisibilities = $this->allowedVisibilities();
+
         return Menu::query()
             ->withoutGlobalScope('website')
             ->where('website_id', $websiteId)
             ->where('location', $location)
             ->where('is_active', true)
+            ->whereIn('visibility', $allowedVisibilities)
             ->with([
                 'items' => fn ($query) => $query
                     ->withoutGlobalScope('website')
                     ->where('website_id', $websiteId)
                     ->where('is_active', true)
-                    ->where('visibility', 'public')
+                    ->whereIn('visibility', $allowedVisibilities)
                     ->orderBy('sort_order')
                     ->orderBy('title'),
             ])
             ->first();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedVisibilities(): array
+    {
+        return auth()->check() ? MenuItem::VISIBILITY_OPTIONS : ['public'];
     }
 
     private function mapItem(MenuItem $item, Collection $allItems): array

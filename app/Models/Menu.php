@@ -15,6 +15,8 @@ class Menu extends Model
     use GeneratesUniqueSlug;
     use HasFactory;
 
+    public const VISIBILITY_OPTIONS = ['public', 'private', 'restricted'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -26,6 +28,7 @@ class Menu extends Model
         'slug',
         'description',
         'location',
+        'visibility',
         'is_active',
     ];
 

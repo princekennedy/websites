@@ -15,7 +15,7 @@ class PublicMenuPageController extends Controller
     {
         $item = MenuItem::query()
             ->where('is_active', true)
-            ->where('visibility', 'public')
+            ->whereIn('visibility', $this->allowedVisibilities())
             ->get()
             ->first(fn (MenuItem $candidate): bool => $candidate->publicPageSlug() === $menuItemName);
 
@@ -39,13 +39,14 @@ class PublicMenuPageController extends Controller
         $reference = trim((string) $item->target_reference);
         $categoryIds = $this->referenceIds($reference, 'category');
         $contentIds = $this->referenceIds($reference, 'content');
+        $allowedContentVisibilities = $this->allowedContentVisibilities();
 
         $categories = ContentCategory::query()
             ->with([
                 'contents' => fn ($query) => $query
                     ->with(['category', 'blocks' => fn ($blockQuery) => $blockQuery->where('is_active', true)->orderBy('sort_order'), 'media'])
                     ->where('status', 'published')
-                    ->where('visibility', 'public')
+                    ->whereIn('visibility', $allowedContentVisibilities)
                     ->latest('published_at'),
             ])
             ->where('menu_item_id', $item->getKey())
@@ -60,7 +61,7 @@ class PublicMenuPageController extends Controller
                     'contents' => fn ($query) => $query
                         ->with(['category', 'blocks' => fn ($blockQuery) => $blockQuery->where('is_active', true)->orderBy('sort_order'), 'media'])
                         ->where('status', 'published')
-                        ->where('visibility', 'public')
+                        ->whereIn('visibility', $allowedContentVisibilities)
                         ->latest('published_at'),
                 ])
                 ->whereIn('id', $categoryIds)
@@ -84,7 +85,7 @@ class PublicMenuPageController extends Controller
                 ->with(['category', 'blocks' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'), 'media'])
                 ->whereIn('id', $contentIds)
                 ->where('status', 'published')
-                ->where('visibility', 'public')
+                ->whereIn('visibility', $allowedContentVisibilities)
                 ->get()
                 ->sortBy(fn (Content $content): int => (int) $contentIds->search($content->getKey()))
                 ->reject(fn (Content $content): bool => $categoryContentIds->contains($content->getKey()))
@@ -147,5 +148,21 @@ class PublicMenuPageController extends Controller
             'eyebrow' => 'Menu page',
             'description' => 'No linked categories or published content are assigned to this menu item yet.',
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedVisibilities(): array
+    {
+        return auth()->check() ? MenuItem::VISIBILITY_OPTIONS : ['public'];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function allowedContentVisibilities(): array
+    {
+        return auth()->check() ? Content::VISIBILITY_OPTIONS : ['public'];
     }
 }

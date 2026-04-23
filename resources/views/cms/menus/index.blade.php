@@ -19,6 +19,7 @@
                 <div class="mt-4 flex flex-wrap gap-4 text-sm text-stone-400">
                     <span>Slug: {{ $menu->slug }}</span>
                     <span>Location: {{ $menu->location ?: 'Not set' }}</span>
+                    <span>Visibility: {{ ucfirst($menu->visibility ?: 'public') }}</span>
                     <span>Items: {{ $menu->items_count }}</span>
                 </div>
 

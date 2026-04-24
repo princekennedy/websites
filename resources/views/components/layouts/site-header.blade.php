@@ -63,6 +63,9 @@
           @csrf
           <button type="submit" class="rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700">Logout</button>
         </form>
+        @if(auth()->user()->hasAdminCmsRole())
+        <a href="/dashboard" class="hidden rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 md:inline-flex">Manage</a>
+        @endif
         @else
         <a href="/login" class="hidden rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700 md:inline-flex">Login</a>
         @endauth

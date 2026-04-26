@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\MenuItemLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\ContentCategory;
 use App\Models\Menu;
@@ -78,8 +78,8 @@ class MenuItem extends Model
      */
     public static function normalizeForPersistence(array $attributes): array
     {
-        $rawLayoutType = trim((string) ($attributes['layout_type'] ?? DesignLayoutType::Default->value));
-        $layoutType = DesignLayoutType::tryFrom($rawLayoutType)?->value ?? DesignLayoutType::Default->value;
+        $rawLayoutType = trim((string) ($attributes['layout_type'] ?? MenuItemLayoutType::Default->value));
+        $layoutType = MenuItemLayoutType::tryFrom($rawLayoutType)?->value ?? MenuItemLayoutType::Default->value;
         $route = static::normalizeNullableString($attributes['route'] ?? null);
         $targetReference = static::normalizeNullableString($attributes['target_reference'] ?? null);
         $openInWebview = static::normalizeBoolean($attributes['open_in_webview'] ?? false);
@@ -109,7 +109,7 @@ class MenuItem extends Model
 
     public function normalizedLayoutType(): string
     {
-        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
+        return MenuItemLayoutType::tryFrom((string) $this->layout_type)?->value ?? MenuItemLayoutType::Default->value;
     }
 
     private static function normalizeNullableString(mixed $value): ?string

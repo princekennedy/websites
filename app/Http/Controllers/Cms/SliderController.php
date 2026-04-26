@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\SliderLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\SliderRequest;
 use App\Models\Slider;
@@ -25,7 +25,7 @@ class SliderController extends Controller
     {
         return view('cms.sliders.create', [
             'slider' => new Slider(),
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => SliderLayoutType::options(),
         ]);
     }
 
@@ -44,7 +44,7 @@ class SliderController extends Controller
     {
         return view('cms.sliders.edit', [
             'slider' => $slider,
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => SliderLayoutType::options(),
         ]);
     }
 

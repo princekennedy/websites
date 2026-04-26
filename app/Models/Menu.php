@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\MenuLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use App\Models\MenuItem;
@@ -59,6 +59,6 @@ class Menu extends Model
 
     public function normalizedLayoutType(): string
     {
-        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
+        return MenuLayoutType::tryFrom((string) $this->layout_type)?->value ?? MenuLayoutType::Default->value;
     }
 }

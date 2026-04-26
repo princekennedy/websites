@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\MenuItemLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\MenuItemRequest;
 use App\Models\Content;
@@ -70,7 +70,7 @@ class MenuItemController extends Controller
             'menu' => $menu,
             'item' => $item,
             'visibilityOptions' => MenuItem::VISIBILITY_OPTIONS,
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => MenuItemLayoutType::options(),
             'parentOptions' => $menu->items()->orderBy('title')->get(),
             'contentOptions' => Content::query()->orderBy('title')->get(['id', 'title']),
             'categoryOptions' => ContentCategory::query()->orderBy('name')->get(['id', 'name']),

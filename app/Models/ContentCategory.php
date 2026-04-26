@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\CategoryLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use App\Models\Content;
@@ -54,7 +54,7 @@ class ContentCategory extends Model
 
     public function normalizedLayoutType(): string
     {
-        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
+        return CategoryLayoutType::tryFrom((string) $this->layout_type)?->value ?? CategoryLayoutType::Default->value;
     }
 
     public function contents(): HasMany

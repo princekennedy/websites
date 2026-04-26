@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\MenuItemLayoutType;
 use App\Support\CurrentWebsite;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,7 +29,7 @@ class MenuItemRequest extends FormRequest
         return [
             'parent_id' => ['nullable', Rule::exists('menu_items', 'id')->where(fn ($query) => $query->where('website_id', $websiteId))],
             'title' => ['required', 'string', 'max:120'],
-            'layout_type' => ['required', Rule::in(DesignLayoutType::values())],
+            'layout_type' => ['required', Rule::in(MenuItemLayoutType::values())],
             'target_reference' => ['nullable', 'string', 'max:255'],
             'route' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'string', 'max:80'],

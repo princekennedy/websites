@@ -8,6 +8,7 @@ use App\Http\Controllers\Cms\ContentController;
 use App\Http\Controllers\Cms\DashboardController;
 use App\Http\Controllers\Cms\MenuController;
 use App\Http\Controllers\Cms\MenuItemController;
+use App\Http\Controllers\Cms\LayoutPreviewController;
 use App\Http\Controllers\Cms\SliderController;
 use App\Http\Middleware\EnsureCmsAccess;
 use App\Http\Controllers\HomeController;
@@ -53,6 +54,7 @@ Route::prefix('cms')
     ->scopeBindings()
     ->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/layout-preview', [LayoutPreviewController::class, 'show'])->name('layout-preview');
         Route::get('/websites', [WebsiteController::class, 'index'])->name('websites.index');
         Route::post('/websites', [WebsiteController::class, 'store'])->name('websites.store');
         Route::post('/websites/{website}/switch', [WebsiteController::class, 'switch'])->name('websites.switch');

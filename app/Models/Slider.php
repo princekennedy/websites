@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\SliderLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -77,6 +77,6 @@ class Slider extends Model implements HasMedia
 
     public function normalizedLayoutType(): string
     {
-        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
+        return SliderLayoutType::tryFrom((string) $this->layout_type)?->value ?? SliderLayoutType::Default->value;
     }
 }

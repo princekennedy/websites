@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\ContentLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\ContentRequest;
 use App\Models\Content;
@@ -32,7 +32,7 @@ class ContentController extends Controller
             'statusOptions' => Content::STATUS_OPTIONS,
             'audienceOptions' => Content::AUDIENCE_OPTIONS,
             'visibilityOptions' => Content::VISIBILITY_OPTIONS,
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => ContentLayoutType::options(),
         ]);
     }
 
@@ -58,7 +58,7 @@ class ContentController extends Controller
             'statusOptions' => Content::STATUS_OPTIONS,
             'audienceOptions' => Content::AUDIENCE_OPTIONS,
             'visibilityOptions' => Content::VISIBILITY_OPTIONS,
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => ContentLayoutType::options(),
         ]);
     }
 

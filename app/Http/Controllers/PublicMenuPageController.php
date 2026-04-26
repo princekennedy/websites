@@ -23,7 +23,8 @@ class PublicMenuPageController extends Controller
 
         [$categories, $contents, $context] = $this->resolvePageData($item);
 
-        return view('designs.pages.menu-item-show', [
+        return view('page', [
+            'pageTemplate' => 'menu-item-show',
             'menuItem' => $item,
             'pageCategories' => $categories,
             'pageContents' => $contents,

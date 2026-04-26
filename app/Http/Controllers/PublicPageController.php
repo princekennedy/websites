@@ -44,6 +44,7 @@ class PublicPageController extends Controller
         [$primaryContent, $pageContents, $pageCategories] = $this->resolvePageData($menu);
 
         return view('page', [
+            'pageTemplate' => 'menu-show',
             'menu' => $menu,
             'primaryContent' => $primaryContent,
             'pageContents' => $pageContents,

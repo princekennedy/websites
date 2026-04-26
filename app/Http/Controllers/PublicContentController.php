@@ -29,7 +29,8 @@ class PublicContentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('designs.pages.categories-index', [
+        return view('page', [
+            'pageTemplate' => 'categories-index',
             'categories' => $categories,
         ]);
     }
@@ -45,7 +46,8 @@ class PublicContentController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('designs.pages.categories-show', [
+        return view('page', [
+            'pageTemplate' => 'categories-show',
             'category' => $category,
             'contents' => $contents,
         ]);
@@ -76,13 +78,16 @@ class PublicContentController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('designs.pages.contents-index', [
+        $filterCategories = ContentCategory::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('page', [
+            'pageTemplate' => 'contents-index',
             'contents' => $contents,
-            'categories' => ContentCategory::query()
-                ->where('is_active', true)
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->get(),
+            'filterCategories' => $filterCategories,
             'typeOptions' => Content::TYPE_OPTIONS,
             'selectedCategory' => $selectedCategory,
             'selectedType' => $selectedType,
@@ -109,7 +114,8 @@ class PublicContentController extends Controller
             ->limit(3)
             ->get();
 
-        return view('designs.pages.contents-show', [
+        return view('page', [
+            'pageTemplate' => 'contents-show',
             'content' => $content,
             'relatedContents' => $relatedContents,
         ]);

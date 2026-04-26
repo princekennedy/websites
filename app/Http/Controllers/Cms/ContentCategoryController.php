@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\CategoryLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\ContentCategoryRequest;
 use App\Models\Content;
@@ -29,7 +29,7 @@ class ContentCategoryController extends Controller
         return view('cms.categories.create', [
             'category' => new ContentCategory(),
             'menuItemOptions' => $this->menuItemOptions(),
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => CategoryLayoutType::options(),
             'visibilityOptions' => Content::VISIBILITY_OPTIONS,
         ]);
     }
@@ -60,7 +60,7 @@ class ContentCategoryController extends Controller
         return view('cms.categories.edit', [
             'category' => $category,
             'menuItemOptions' => $this->menuItemOptions(),
-            'layoutOptions' => DesignLayoutType::options(),
+            'layoutOptions' => CategoryLayoutType::options(),
             'visibilityOptions' => Content::VISIBILITY_OPTIONS,
         ]);
     }

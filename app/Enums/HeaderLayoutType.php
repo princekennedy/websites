@@ -3,11 +3,10 @@
 namespace App\Enums;
 
 /**
- * Layouts available under resources/views/designs/headers/ (and footers/).
- * The Menu layout_type controls which header/footer chrome design pair is used.
- * Add a new case here whenever you add a new Blade file under designs/headers/.
+ * Layouts available under resources/views/designs/headers/.
+ * Add a new case here whenever you add a new Blade file to that folder.
  */
-enum MenuLayoutType: string
+enum HeaderLayoutType: string
 {
     case Default   = 'default';    // designs/headers/default.blade.php
     case Minimal   = 'minimal';    // designs/headers/minimal.blade.php
@@ -17,10 +16,10 @@ enum MenuLayoutType: string
     public function label(): string
     {
         return match ($this) {
-            self::Default   => 'Default - Dark gradient site chrome',
-            self::Minimal   => 'Minimal - Clean light header and footer',
-            self::Editorial => 'Editorial - Article-style site chrome',
-            self::Card      => 'Card - Compact card-style header',
+            self::Default   => 'Default - Dark gradient header with full navigation',
+            self::Minimal   => 'Minimal - Clean light header, compact links',
+            self::Editorial => 'Editorial - Article-masthead style header',
+            self::Card      => 'Card - Bordered card-style header panel',
         };
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Cms;
 
-use App\Enums\DesignLayoutType;
+use App\Enums\CategoryLayoutType;
 use App\Models\Content;
 use App\Support\CurrentWebsite;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,7 +33,7 @@ class ContentCategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:120'],
             'visibility' => ['required', Rule::in(Content::VISIBILITY_OPTIONS)],
             'slug' => ['nullable', 'string', 'max:140', Rule::unique('content_categories', 'slug')->where(fn ($query) => $query->where('website_id', $websiteId))->ignore($categoryId)],
-            'layout_type' => ['required', Rule::in(DesignLayoutType::values())],
+            'layout_type' => ['required', Rule::in(CategoryLayoutType::values())],
             'description' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],

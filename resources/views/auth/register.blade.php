@@ -1,9 +1,9 @@
-<x-layouts.site title="Register | SRHR Connect">
+<x-layouts.site title="Register | {{ config('app.name', 'Sample Platform') }}">
     <section class="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl items-center gap-8 px-6 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
         <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-600 dark:text-indigo-400">Create Access</p>
-            <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Create your SRHR Connect account.</h1>
-            <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">This registration flow supports person-space accounts for mobile and personalized features. CMS access is reserved for users who have been granted administrator permissions, while public SRHR pages stay open to everyone.</p>
+            <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Create your {{ config('app.name', 'Sample Platform') }} account.</h1>
+            <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">This registration flow supports person-space accounts for mobile and personalized features. CMS access is reserved for users who have been granted administrator permissions, while public pages stay open to everyone.</p>
 
             <div class="mt-8 space-y-4">
                 <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-800/50">
@@ -28,6 +28,14 @@
                     <label for="name" class="text-sm font-medium text-slate-900 dark:text-slate-200">Full name</label>
                     <input id="name" name="name" type="text" value="{{ old('name') }}" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400" required autofocus>
                     @error('name')
+                        <p class="mt-2 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="phone" class="text-sm font-medium text-slate-900 dark:text-slate-200">Phone</label>
+                    <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400" required>
+                    @error('phone')
                         <p class="mt-2 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>

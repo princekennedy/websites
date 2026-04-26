@@ -45,7 +45,7 @@ class WebsiteController extends Controller
         $user->switchToWebsite($website);
 
         return redirect()
-            ->route('websites.index')
+            ->route('cms.websites.index')
             ->with('status', 'Website created and set as current workspace.');
     }
 

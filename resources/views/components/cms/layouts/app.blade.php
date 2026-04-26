@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $title ?? 'CMS' }} | SRHR</title>
+        <title>{{ $title ?? 'CMS' }} | {{ config('app.name', 'Sample Platform') }}</title>
         <script>
             (() => {
                 const storedTheme = window.localStorage.getItem('srhr-cms-theme') || 'light';
@@ -22,16 +22,33 @@
                         <div class="flex flex-wrap items-center gap-4">
                             <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 via-cyan-500 to-orange-400 text-base font-black tracking-[0.2em] text-white shadow-lg shadow-orange-200/40 dark:shadow-none">CMS</div>
                             <div>
-                                <p class="cms-kicker text-[0.72rem] font-semibold uppercase tracking-[0.35em]">SRHR Platform</p>
+                                <p class="cms-kicker text-[0.72rem] font-semibold uppercase tracking-[0.35em]">{{ config('app.name', 'Sample Platform') }}</p>
                                 <h1 class="cms-title mt-1 text-xl font-bold tracking-tight">CMS Workspace</h1>
                             </div>
-                            @if (auth()->user()?->currentWebsite)
-                                <span class="cms-chip inline-flex items-center px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em]">{{ auth()->user()?->currentWebsite?->name }}</span>
-                            @endif
                         </div>
 
                         <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-                            <a href="{{ route('websites.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-stone-200 dark:hover:text-white">Websites</a>
+                            @php
+                                $workspaceWebsites = auth()->user()?->websites()->orderBy('name')->get() ?? collect();
+                            @endphp
+                            @if ($workspaceWebsites->isNotEmpty())
+                                <form method="POST" action="{{ route('cms.websites.switch', auth()->user()?->currentWebsite ?? $workspaceWebsites->first()) }}" class="flex items-center gap-2">
+                                    @csrf
+                                    <label for="website-switcher" class="sr-only">Active website</label>
+                                    <select
+                                        id="website-switcher"
+                                        class="rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-sky-200 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200 dark:border-white/10 dark:bg-white/5 dark:text-stone-200 dark:focus:ring-sky-500/20"
+                                        onchange="if (this.value) { this.form.action = this.value; this.form.submit(); }"
+                                    >
+                                        @foreach ($workspaceWebsites as $workspaceWebsite)
+                                            <option value="{{ route('cms.websites.switch', $workspaceWebsite) }}" @selected(auth()->user()?->current_website_id === $workspaceWebsite->id)>
+                                                {{ $workspaceWebsite->name }}@if(auth()->user()?->current_website_id === $workspaceWebsite->id) (active)@endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            @endif
+                            <a href="{{ route('cms.websites.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-stone-200 dark:hover:text-white">Websites</a>
                             <div class="cms-glass rounded-2xl px-4 py-2.5">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <p class="text-sm font-semibold text-slate-800 dark:text-white">{{ auth()->user()?->name }}</p>
@@ -64,6 +81,7 @@
                         @php
                             $navigation = [
                                 ['label' => 'Dashboard', 'route' => 'cms.dashboard'],
+                                ['label' => 'Websites', 'route' => 'cms.websites.index'],
                                 ['label' => 'Menus', 'route' => 'cms.menus.index'],
                                 ['label' => 'Sliders', 'route' => 'cms.sliders.index'],
                                 ['label' => 'Content Categories', 'route' => 'cms.categories.index'],

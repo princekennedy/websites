@@ -27,7 +27,7 @@
                             </div>
 
                             @if ($currentWebsiteId !== $website->id)
-                                <form method="POST" action="{{ route('websites.switch', $website) }}">
+                                <form method="POST" action="{{ route('cms.websites.switch', $website) }}">
                                     @csrf
                                     <button type="submit" class="inline-flex items-center rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-sky-200 hover:text-slate-900 dark:border-white/10 dark:bg-white/5 dark:text-stone-200">Switch</button>
                                 </form>
@@ -49,7 +49,7 @@
             <h3 class="cms-heading mt-2 text-2xl font-semibold">Add a new website</h3>
             <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-stone-300">Each website gets its own categories, content, menus, FAQs, quizzes, services, and app settings.</p>
 
-            <form method="POST" action="{{ route('websites.store') }}" class="mt-6 space-y-5">
+            <form method="POST" action="{{ route('cms.websites.store') }}" class="mt-6 space-y-5">
                 @csrf
 
                 <div>

@@ -1,9 +1,9 @@
-<x-layouts.site title="Log In | SRHR Connect">
+<x-layouts.site title="Log In | {{ config('app.name', 'Sample Platform') }}">
     <section class="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl items-center gap-8 px-6 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-600 dark:text-indigo-400">Welcome Back</p>
-            <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Sign in to manage SRHR content.</h1>
-            <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">Use your account to access the CMS workspace if you have administrator permissions, or to manage your personal platform identity while public SRHR pages remain available without sign-in.</p>
+            <h1 class="mt-3 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Sign in to manage website content.</h1>
+            <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">Use your account to access the CMS workspace if you have administrator permissions, or to manage your personal platform identity while public pages remain available without sign-in.</p>
 
             <div class="mt-8 grid gap-4 sm:grid-cols-2">
                 <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-800/50">

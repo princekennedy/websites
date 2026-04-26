@@ -21,7 +21,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)->name('home');
+Route::get('/', [HomeController::class, 'welcome'])->name('home');
+Route::get('/admin',[ HomeController::class, 'admin'])->name('admin');
 Route::get('/menu-item/{menuItemName}', [PublicMenuPageController::class, 'show'])->name('public.menu-pages.show');
 Route::get('/topics', [PublicContentController::class, 'categories'])->name('public.categories.index');
 Route::get('/topics/{category:slug}', [PublicContentController::class, 'showCategory'])->name('public.categories.show');
@@ -42,9 +43,7 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-    Route::get('/websites', [WebsiteController::class, 'index'])->name('websites.index');
-    Route::post('/websites', [WebsiteController::class, 'store'])->name('websites.store');
-    Route::post('/websites/{website}/switch', [WebsiteController::class, 'switch'])->name('websites.switch');
+    Route::redirect('/websites', '/cms/websites');
     Route::get('/dashboard', function (Request $request): RedirectResponse {
         return $request->user()?->canAccessCms()
             ? redirect()->route('cms.dashboard')
@@ -60,6 +59,9 @@ Route::prefix('cms')
     ->scopeBindings()
     ->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/websites', [WebsiteController::class, 'index'])->name('websites.index');
+        Route::post('/websites', [WebsiteController::class, 'store'])->name('websites.store');
+        Route::post('/websites/{website}/switch', [WebsiteController::class, 'switch'])->name('websites.switch');
         Route::resource('categories', ContentCategoryController::class);
         Route::resource('contents', ContentController::class)->except(['show']);
         Route::resource('faqs', FaqController::class)->except(['show']);

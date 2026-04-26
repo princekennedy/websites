@@ -24,6 +24,7 @@ class RegisteredUserController extends Controller
     {
         $payload = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:255', 'unique:users,phone'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'website_name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Password::defaults()],
@@ -31,6 +32,7 @@ class RegisteredUserController extends Controller
 
         $user = User::create([
             'name' => $payload['name'],
+            'phone' => $payload['phone'],
             'email' => $payload['email'],
             'password' => Hash::make($payload['password']),
         ]);
@@ -65,6 +67,6 @@ class RegisteredUserController extends Controller
 
         return redirect()
             ->route('home')
-            ->with('status', 'Account created successfully. Public SRHR pages are available immediately, while CMS access remains limited to administrator roles.');
+            ->with('status', 'Account created successfully. Public pages are available immediately, while CMS access remains limited to administrator roles.');
     }
 }

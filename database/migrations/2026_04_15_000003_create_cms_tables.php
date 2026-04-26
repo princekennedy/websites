@@ -42,6 +42,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('visibility', 20)->default('public');
             $table->string('slug');
+            $table->string('layout_type')->default('default');
             $table->text('description')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
@@ -55,9 +56,10 @@ return new class extends Migration
             $table->foreignId('website_id')->constrained('websites')->cascadeOnDelete();
             $table->string('title');
             $table->string('slug');
+            $table->string('layout_type', 40)->default('default');
             $table->text('summary')->nullable();
             $table->longText('body')->nullable();
-            $table->string('content_type', 40)->default('page');
+            $table->string('content_type')->default('page');
             $table->foreignId('category_id')->nullable()->constrained('content_categories')->nullOnDelete();
 
             $table->string('status', 20)->default('draft');
@@ -81,6 +83,7 @@ return new class extends Migration
             $table->string('block_type', 40);
             $table->string('title')->nullable();
             $table->longText('body')->nullable();
+            $table->string('layout_type')->default('default'); // design layout
 
             $table->json('json_data')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
@@ -96,7 +99,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->text('description')->nullable();
-            $table->string('location', 80)->nullable();
+            $table->string('layout_type')->default('default'); // design layout
+            $table->string('location')->nullable(); // header, footer etc
             $table->string('visibility', 20)->default('public');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -110,7 +114,7 @@ return new class extends Migration
             $table->foreignId('menu_id')->constrained('menus')->cascadeOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('menu_items')->nullOnDelete();
             $table->string('title');
-            $table->string('type', 40)->default('content');
+            $table->string('layout_type')->default('default');
             $table->string('target_reference')->nullable();
 
             $table->string('route')->nullable();

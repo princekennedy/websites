@@ -76,11 +76,14 @@ class CmsSeeder extends Seeder
 
         Role::query()->where('name', 'app-user')->where('guard_name', 'web')->delete();
 
+        $samplePlatformName = config('app.name', 'Sample Platform');
+
         $superAdmin = User::query()->updateOrCreate(
             ['email' => 'super-admin@srhr.test'],
             [
-                'name' => 'SRHR Super Admin',
+                'name' => $samplePlatformName.' Super Admin',
                 'password' => Hash::make('password'),
+                'phone' => '0992383848',
                 'email_verified_at' => now(),
             ],
         );
@@ -89,7 +92,8 @@ class CmsSeeder extends Seeder
         $admin = User::query()->updateOrCreate(
             ['email' => 'admin@srhr.test'],
             [
-                'name' => 'SRHR Admin',
+                'name' => $samplePlatformName.' Admin',
+                'phone' => '0992383842',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ],
@@ -99,7 +103,8 @@ class CmsSeeder extends Seeder
         $demoYouth = User::query()->updateOrCreate(
             ['email' => 'user@srhr.test'],
             [
-                'name' => 'SRHR Platform User',
+                'name' => $samplePlatformName.' User',
+                'phone' => '0992383841',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ],
@@ -166,11 +171,11 @@ class CmsSeeder extends Seeder
 
         $contents = collect([
             [
-                'title' => 'About SRHR Connect',
+                'title' => 'About the Platform',
                 'content_type' => 'page',
                 'category' => 'Support and Referrals',
                 'summary' => 'An overview of what the platform offers, who it serves, and how it supports young people safely.',
-                'body' => 'SRHR Connect brings together trusted SRHR information, service referrals, quizzes, and help pathways in one youth-friendly digital experience.',
+                'body' => 'This platform brings together trusted information, service referrals, quizzes, and help pathways in one youth-friendly digital experience.',
                 'audience' => 'general',
             ],
             [
@@ -529,9 +534,9 @@ class CmsSeeder extends Seeder
                 'description' => 'Platform overview and trust-focused entry points for the public site.',
                 'items' => [
                     [
-                        'title' => 'About SRHR Connect',
+                        'title' => 'About the Platform',
                         'type' => 'webview_page',
-                        'target_reference' => 'content:'.$contents['About SRHR Connect']->id.','.$contents['Privacy and Trust Online']->id,
+                        'target_reference' => 'content:'.$contents['About the Platform']->id.','.$contents['Privacy and Trust Online']->id,
                         'icon' => 'info',
                         'sort_order' => 1,
                         'open_in_webview' => true,

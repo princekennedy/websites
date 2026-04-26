@@ -6,7 +6,6 @@ use App\Models\Content;
 use App\Models\ContentCategory;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\Quiz;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -45,6 +44,7 @@ class PublicNavigation
                     ->orderBy('sort_order')
                     ->orderBy('title'),
             ])
+            ->orderBy('sort_order')
             ->orderBy('name')
             ->get()
             ->map(function (Menu $menu): array {
@@ -58,10 +58,11 @@ class PublicNavigation
 
                 return [
                     'title' => $menu->name,
+                    'layout_type' => $menu->normalizedLayoutType(),
+                    'href' => $this->resolveMenuHref($menu),
                     'items' => $items,
                 ];
             })
-            ->filter(fn (array $menu): bool => collect($menu['items'])->isNotEmpty())
             ->values();
     }
 
@@ -144,6 +145,7 @@ class PublicNavigation
 
         return [
             'title' => $item->title,
+            'layout_type' => $item->normalizedLayoutType(),
             'href' => $this->resolveMenuItemUrl($item),
             'children' => $children,
         ];
@@ -175,19 +177,35 @@ class PublicNavigation
         return collect([
             ['title' => 'Topics', 'href' => route('public.categories.index'), 'children' => collect()],
             ['title' => 'Content', 'href' => route('public.contents.index'), 'children' => collect()],
-            ['title' => 'FAQs', 'href' => route('public.faqs.index'), 'children' => collect()],
-            ['title' => 'Quizzes', 'href' => route('public.quizzes.index'), 'children' => collect()],
-            ['title' => 'Services', 'href' => route('public.services.index'), 'children' => collect()],
         ]);
+    }
+
+    private function resolveMenuHref(Menu $menu): string
+    {
+        if ($menu->slug === 'home') {
+            return route('home');
+        }
+
+        return route('public.pages.show', $menu);
     }
 
     private function resolveMenuItemUrl(MenuItem $item): ?string
     {
-        if ($item->type === 'external_url') {
-            return $this->resolveExternalTarget($item->route ?? $item->target_reference);
+        if (filled($item->target_reference)) {
+            if (str_starts_with((string) $item->target_reference, 'content:')) {
+                return $this->resolveContentTarget($item->target_reference);
+            }
+
+            if (str_starts_with((string) $item->target_reference, 'category:')) {
+                return $this->resolveCategoryTarget($item->target_reference);
+            }
+
+            if (Str::startsWith((string) $item->target_reference, ['http://', 'https://', 'mailto:', 'tel:'])) {
+                return $this->resolveExternalTarget($item->target_reference);
+            }
         }
 
-        if ($item->type === 'internal_route') {
+        if (filled($item->route)) {
             return $this->resolveInternalRoute($item->route);
         }
 
@@ -234,27 +252,6 @@ class PublicNavigation
             ->value('slug');
 
         return $slug === null ? route('public.categories.index') : route('public.categories.show', $slug);
-    }
-
-    private function resolveQuizTarget(?string $reference): ?string
-    {
-        if (! Schema::hasTable('quizzes')) {
-            return route('public.quizzes.index');
-        }
-
-        $id = $this->extractReferenceId($reference, 'quiz');
-
-        if ($id === null) {
-            return route('public.quizzes.index');
-        }
-
-        $slug = Quiz::query()
-            ->withoutGlobalScope('website')
-            ->where('website_id', $this->websiteId())
-            ->whereKey($id)
-            ->value('slug');
-
-        return $slug === null ? route('public.quizzes.index') : route('public.quizzes.show', $slug);
     }
 
     private function websiteId(): ?int

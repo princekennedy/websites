@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Menus" eyebrow="CMS Navigation" heading="Menu builder" subheading="Create database-driven navigation structures that the app can request and render dynamically.">
+<x-layouts.app title="Menus" eyebrow="CMS Navigation" heading="Menu builder" subheading="Create database-driven navigation structures that the app can request and render dynamically.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.menus'))
         <x-slot:headerAction>
             <a href="{{ route('cms.menus.create') }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">New menu</a>
@@ -18,6 +18,7 @@
 
                 <div class="mt-4 flex flex-wrap gap-4 text-sm text-stone-400">
                     <span>Slug: {{ $menu->slug }}</span>
+                    <span>Layout: {{ $menu->normalizedLayoutType() }}</span>
                     <span>Location: {{ $menu->location ?: 'Not set' }}</span>
                     <span>Visibility: {{ ucfirst($menu->visibility ?: 'public') }}</span>
                     <span>Items: {{ $menu->items_count }}</span>
@@ -51,4 +52,4 @@
             </article>
         @endforelse
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

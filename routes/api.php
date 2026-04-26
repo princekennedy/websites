@@ -20,9 +20,6 @@ Route::get('/menus/main', [AppDataController::class, 'mainMenu']);
 Route::get('/contents', [AppDataController::class, 'contents']);
 Route::get('/contents/{slug}', [AppDataController::class, 'showContent']);
 Route::get('/categories', [AppDataController::class, 'categories']);
-Route::get('/faqs', [AppDataController::class, 'faqs']);
-Route::get('/quizzes', [AppDataController::class, 'quizzes']);
-Route::get('/service-centers', [AppDataController::class, 'serviceCenters']);
 Route::get('/notifications', [AppDataController::class, 'notifications']);
 
 Route::middleware('auth:sanctum')->group(function (): void {

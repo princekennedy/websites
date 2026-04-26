@@ -74,7 +74,7 @@
                 <aside class="cms-panel cms-gradient-card h-fit px-5 py-6 lg:h-full lg:overflow-y-auto">
                     <div class="mb-6 rounded-[1.2rem] border border-slate-200/80 bg-white/70 px-4 py-4 dark:border-white/10 dark:bg-white/5">
                         <p class="cms-kicker text-[0.7rem] font-semibold uppercase tracking-[0.32em]">Navigation</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-stone-300">Manage tenant content, app data, and runtime configuration from one workspace.</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-stone-300">Manage website workspaces, content, navigation, sliders, and runtime configuration from one workspace.</p>
                     </div>
 
                     <nav class="space-y-2">
@@ -82,12 +82,10 @@
                             $navigation = [
                                 ['label' => 'Dashboard', 'route' => 'cms.dashboard'],
                                 ['label' => 'Websites', 'route' => 'cms.websites.index'],
+                                ['label' => 'Content', 'route' => 'cms.contents.index'],
+                                ['label' => 'Content Categories', 'route' => 'cms.categories.index'],
                                 ['label' => 'Menus', 'route' => 'cms.menus.index'],
                                 ['label' => 'Sliders', 'route' => 'cms.sliders.index'],
-                                ['label' => 'Content Categories', 'route' => 'cms.categories.index'],
-                                ['label' => 'FAQs', 'route' => 'cms.faqs.index'],
-                                ['label' => 'Quizzes', 'route' => 'cms.quizzes.index'],
-                                ['label' => 'Services', 'route' => 'cms.services.index'],
                                 ['label' => 'Settings', 'route' => 'cms.settings.index'],
                             ];
                         @endphp

@@ -11,7 +11,7 @@ class WebsiteController extends Controller
 {
     public function index(Request $request): View
     {
-        return view('websites.index', [
+        return view('cms.websites.index', [
             'websites' => $request->user()?->websites()->orderBy('name')->get() ?? collect(),
             'currentWebsiteId' => $request->user()?->current_website_id,
         ]);
@@ -35,6 +35,7 @@ class WebsiteController extends Controller
             'is_active' => true,
         ]);
 
+        $website->ensureDefaultHomeMenu();
         \App\Models\AppSetting::seedDefaultsForWebsite($website);
 
         $user->websites()->attach($website->id, [

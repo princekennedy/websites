@@ -38,27 +38,6 @@ class EnsureCmsAccess
                 'cms.contents.destroy',
             ], $routeName) => 'cms.manage.contents',
             Str::is([
-                'cms.faqs.create',
-                'cms.faqs.store',
-                'cms.faqs.edit',
-                'cms.faqs.update',
-                'cms.faqs.destroy',
-            ], $routeName) => 'cms.manage.faqs',
-            Str::is([
-                'cms.quizzes.create',
-                'cms.quizzes.store',
-                'cms.quizzes.edit',
-                'cms.quizzes.update',
-                'cms.quizzes.destroy',
-            ], $routeName) => 'cms.manage.quizzes',
-            Str::is([
-                'cms.services.create',
-                'cms.services.store',
-                'cms.services.edit',
-                'cms.services.update',
-                'cms.services.destroy',
-            ], $routeName) => 'cms.manage.services',
-            Str::is([
                 'cms.sliders.create',
                 'cms.sliders.store',
                 'cms.sliders.edit',

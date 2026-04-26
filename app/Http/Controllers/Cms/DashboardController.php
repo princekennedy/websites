@@ -6,11 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
 use App\Models\Content;
 use App\Models\ContentCategory;
-use App\Models\Faq;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\Quiz;
-use App\Models\ServiceCenter;
+use App\Models\Slider;
+use App\Models\Website;
 use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller
@@ -19,11 +18,10 @@ class DashboardController extends Controller
     {
         return view('cms.dashboard', [
             'stats' => [
+                'websites' => Website::count(),
                 'categories' => ContentCategory::count(),
                 'contents' => Content::count(),
-                'faqs' => Faq::count(),
-                'quizzes' => Quiz::count(),
-                'services' => ServiceCenter::count(),
+                'sliders' => Slider::count(),
                 'menus' => Menu::count(),
                 'menuItems' => MenuItem::count(),
                 'settings' => AppSetting::count(),
@@ -35,19 +33,19 @@ class DashboardController extends Controller
                 ->get(),
             'moduleHighlights' => [
                 [
-                    'label' => 'FAQ knowledge base',
-                    'count' => Faq::where('is_published', true)->count(),
-                    'description' => 'Moderated answers for high-frequency SRHR questions.',
+                    'label' => 'Website workspaces',
+                    'count' => Website::count(),
+                    'description' => 'Active websites that can be managed and switched inside the CMS.',
                 ],
                 [
-                    'label' => 'Interactive quizzes',
-                    'count' => Quiz::where('status', 'published')->count(),
-                    'description' => 'Scenario-driven quizzes and self-check learning tools.',
+                    'label' => 'Published content',
+                    'count' => Content::where('status', 'published')->count(),
+                    'description' => 'Published pages and articles available for public rendering.',
                 ],
                 [
-                    'label' => 'Service directory',
-                    'count' => ServiceCenter::where('is_active', true)->count(),
-                    'description' => 'Youth-friendly facilities and referral destinations.',
+                    'label' => 'Active sliders',
+                    'count' => Slider::where('is_active', true)->count(),
+                    'description' => 'Homepage and campaign slider entries ready for the current default design.',
                 ],
                 [
                     'label' => 'App settings',

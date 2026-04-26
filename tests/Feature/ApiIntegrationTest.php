@@ -67,9 +67,6 @@ class ApiIntegrationTest extends TestCase
             ->assertJsonCount(3, 'data.hero_slides')
             ->assertJsonCount(5, 'data.categories')
             ->assertJsonCount(8, 'data.featured_contents')
-            ->assertJsonCount(4, 'data.faqs')
-            ->assertJsonCount(1, 'data.quizzes')
-            ->assertJsonCount(3, 'data.services')
             ->assertJsonFragment(['key' => 'app_name', 'value' => 'SRHR Connect'])
             ->assertJsonPath('data.hero_slides.0.title', 'Build a beautiful online presence that grows your brand');
     }

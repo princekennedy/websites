@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,21 +62,6 @@ class Website extends Model
         return $this->hasMany(Content::class);
     }
 
-    public function faqs(): HasMany
-    {
-        return $this->hasMany(Faq::class);
-    }
-
-    public function quizzes(): HasMany
-    {
-        return $this->hasMany(Quiz::class);
-    }
-
-    public function services(): HasMany
-    {
-        return $this->hasMany(ServiceCenter::class);
-    }
-
     public function menus(): HasMany
     {
         return $this->hasMany(Menu::class);
@@ -84,5 +70,25 @@ class Website extends Model
     public function settings(): HasMany
     {
         return $this->hasMany(AppSetting::class);
+    }
+
+    public function ensureDefaultHomeMenu(): Menu
+    {
+        return Menu::query()->updateOrCreate(
+            [
+                'website_id' => $this->id,
+                'slug' => 'home',
+            ],
+            [
+                'website_id' => $this->id,
+                'name' => 'Home',
+                'description' => 'Default landing page for this website workspace.',
+                'sort_order' => 1,
+                'layout_type' => DesignLayoutType::Default->value,
+                'location' => 'public-primary',
+                'visibility' => 'public',
+                'is_active' => true,
+            ],
+        );
     }
 }

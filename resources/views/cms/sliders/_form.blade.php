@@ -20,6 +20,15 @@
         </div>
 
         <div>
+            <label for="layout_type" class="text-sm font-medium text-slate-900 dark:text-stone-200">Layout</label>
+            <select id="layout_type" name="layout_type" class="cms-select mt-2">
+                @foreach ($layoutOptions as $value => $label)
+                    <option value="{{ $value }}" @selected(old('layout_type', $slider->normalizedLayoutType()) === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
             <label for="caption" class="text-sm font-medium text-slate-900 dark:text-stone-200">Caption</label>
             <textarea id="caption" name="caption" rows="6" class="cms-textarea mt-2">{{ old('caption', $slider->caption) }}</textarea>
         </div>

@@ -24,6 +24,7 @@ class ContentBlock extends Model
         'block_type',
         'title',
         'body',
+        'layout_type',
         'json_data',
         'sort_order',
         'is_active',

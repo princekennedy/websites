@@ -34,9 +34,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('website_id')->constrained('websites')->cascadeOnDelete();
             $table->string('title');
+            $table->foreignId('content_id')->nullable()->constrained('contents')->nullOnDelete();
             $table->string('slug');
             $table->string('kicker', 120)->nullable();
             $table->string('layout_type')->default('default');
+            $table->text('caption')->nullable();
+            $table->string('primary_button_text', 80)->nullable();
+            $table->string('primary_button_link')->nullable();
+            $table->string('secondary_button_text', 80)->nullable();
+            $table->string('secondary_button_link')->nullable();
+            $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();

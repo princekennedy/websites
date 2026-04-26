@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,12 +27,14 @@ class Slider extends Model implements HasMedia
         'title',
         'slug',
         'kicker',
+        'layout_type',
         'caption',
         'primary_button_text',
         'primary_button_link',
         'secondary_button_text',
         'secondary_button_link',
         'sort_order',
+        'content_id',
         'is_active',
         'created_by',
         'updated_by',
@@ -62,9 +65,18 @@ class Slider extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+    public function content(): BelongsTo
+    {
+        return $this->belongsTo(Content::class);
+    }
 
     public function editor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function normalizedLayoutType(): string
+    {
+        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
     }
 }

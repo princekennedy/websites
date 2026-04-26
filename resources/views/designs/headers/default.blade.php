@@ -1,4 +1,4 @@
-<!-- Header -->
+<!-- Header (Default) -->
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200 transition-colors duration-200 dark:bg-slate-950/90 dark:border-slate-800">
   @php
     $siteMenus = collect($siteMenus ?? []);
@@ -8,21 +8,20 @@
       <a href="/" class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{{ data_get($publicSite ?? [], 'brand.name', 'Brandly') }}</a>
 
       <nav class="hidden items-center gap-8 md:flex">
-        <a href="{{ route('home') }}" class="text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400">Home</a>
-
         @foreach ($siteMenus as $menu)
           @php
             $menuItems = collect($menu['items'] ?? []);
+            $menuHref = $menu['href'] ?? null;
           @endphp
 
           @if ($menuItems->isNotEmpty())
             <div class="relative group">
-              <button class="flex items-center gap-2 text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
+              <a href="{{ $menuHref ?: '#' }}" class="flex items-center gap-2 text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400">
                 {{ $menu['title'] }}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
+              </a>
               <div class="invisible absolute left-0 top-full mt-3 w-72 rounded-2xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-800">
                 @foreach ($menuItems as $item)
                   @php
@@ -44,6 +43,8 @@
                 @endforeach
               </div>
             </div>
+          @elseif (filled($menuHref))
+            <a href="{{ $menuHref }}" class="text-sm font-medium hover:text-indigo-600 dark:hover:text-indigo-400">{{ $menu['title'] }}</a>
           @endif
         @endforeach
       </nav>
@@ -67,14 +68,12 @@
     </div>
   </div>
 
-  <!-- Mobile Menu -->
   <div id="mobileMenu" class="hidden border-t border-slate-200 bg-white md:hidden dark:border-slate-800 dark:bg-slate-900">
     <div class="space-y-2 px-6 py-4">
-      <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
-
       @foreach ($siteMenus as $menu)
         @php
           $menuItems = collect($menu['items'] ?? []);
+          $menuHref = $menu['href'] ?? null;
         @endphp
 
         @if ($menuItems->isNotEmpty())
@@ -101,6 +100,8 @@
               @endforeach
             </div>
           </details>
+        @elseif (filled($menuHref))
+          <a href="{{ $menuHref }}" class="block rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">{{ $menu['title'] }}</a>
         @endif
       @endforeach
     </div>

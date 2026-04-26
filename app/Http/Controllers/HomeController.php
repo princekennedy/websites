@@ -14,65 +14,6 @@ use Throwable;
 
 class HomeController extends Controller
 {
-    public function welcome(PublicNavigation $navigation, PublicSiteConfig $siteConfig): View
-    {
-        try {
-            $hasCmsTables = Schema::hasTable('contents')
-                && Schema::hasTable('content_categories')
-                && Schema::hasTable('menus');
-
-            $primaryMenuItems = $navigation->items();
-            $menuHighlights = $this->menuHighlights($navigation->quickLinks(limit: 6));
-            $featuredContents = $hasCmsTables
-                ? Content::query()
-                    ->with('category')
-                    ->where('status', 'published')
-                    ->where('visibility', 'public')
-                    ->latest('published_at')
-                    ->limit(6)
-                    ->get()
-                : new Collection();
-            $categories = $hasCmsTables
-                ? ContentCategory::query()
-                    ->where('is_active', true)
-                    ->withCount([
-                        'contents' => fn ($query) => $query
-                            ->where('status', 'published')
-                            ->where('visibility', 'public'),
-                    ])
-                    ->orderBy('sort_order')
-                    ->orderBy('name')
-                    ->limit(6)
-                    ->get()
-                : new Collection();
-            $siteConfigData = $siteConfig->data();
-        } catch (Throwable $exception) {
-            report($exception);
-
-            $primaryMenuItems = collect();
-            $menuHighlights = collect();
-            $featuredContents = new Collection();
-            $categories = new Collection();
-            $siteConfigData = [
-                'brand' => [
-                    'name' => config('app.name', 'SRHR Connect'),
-                    'message' => 'Trusted SRHR guidance and support access in one place.',
-                ],
-                'homepage' => ['slides' => []],
-            ];
-        }
-
-        return view('welcome', [
-            'featuredContents' => $featuredContents,
-            'categories' => $categories,
-            'primaryMenuItems' => $primaryMenuItems,
-            'menuHighlights' => $menuHighlights,
-            'coreMenuItems' => $menuHighlights->take(4)->values(),
-            'heroSlides' => $this->heroSlides($featuredContents, $menuHighlights, $siteConfigData),
-            'siteConfig' => $siteConfigData,
-        ]);
-    }
-
     public function admin(PublicNavigation $navigation, PublicSiteConfig $siteConfig): View
     {
         try {

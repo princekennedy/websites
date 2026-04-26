@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Content;
 use App\Models\ContentCategory;
-use App\Models\Faq;
-use App\Models\Quiz;
-use App\Models\ServiceCenter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -32,7 +29,7 @@ class PublicContentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('public.categories.index', [
+        return view('designs.pages.categories-index', [
             'categories' => $categories,
         ]);
     }
@@ -48,7 +45,7 @@ class PublicContentController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('public.categories.show', [
+        return view('designs.pages.categories-show', [
             'category' => $category,
             'contents' => $contents,
         ]);
@@ -79,7 +76,7 @@ class PublicContentController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        return view('public.contents.index', [
+        return view('designs.pages.contents-index', [
             'contents' => $contents,
             'categories' => ContentCategory::query()
                 ->where('is_active', true)
@@ -112,112 +109,9 @@ class PublicContentController extends Controller
             ->limit(3)
             ->get();
 
-        return view('public.contents.show', [
+        return view('designs.pages.contents-show', [
             'content' => $content,
             'relatedContents' => $relatedContents,
-        ]);
-    }
-
-    public function faqs(Request $request): View
-    {
-        $selectedCategory = $request->string('category')->toString();
-
-        $faqs = Faq::query()
-            ->with('category')
-            ->where('is_published', true)
-            ->where('visibility', 'public')
-            ->when($selectedCategory !== '', function ($query) use ($selectedCategory): void {
-                $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $selectedCategory));
-            })
-            ->orderBy('sort_order')
-            ->paginate(12)
-            ->withQueryString();
-
-        return view('public.faqs.index', [
-            'faqs' => $faqs,
-            'categories' => ContentCategory::query()
-                ->where('is_active', true)
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->get(),
-            'selectedCategory' => $selectedCategory,
-        ]);
-    }
-
-    public function quizzes(): View
-    {
-        $quizzes = Quiz::query()
-            ->withCount('questions')
-            ->where('status', 'published')
-            ->where('visibility', 'public')
-            ->latest('published_at')
-            ->paginate(9);
-
-        return view('public.quizzes.index', [
-            'quizzes' => $quizzes,
-        ]);
-    }
-
-    public function showQuiz(Quiz $quiz): View
-    {
-        abort_unless($quiz->status === 'published' && $quiz->visibility === 'public', 404);
-
-        $quiz->load([
-            'questions' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
-            'questions.options' => fn ($query) => $query->orderBy('sort_order'),
-        ]);
-
-        return view('public.quizzes.show', [
-            'quiz' => $quiz,
-        ]);
-    }
-
-    public function services(Request $request): View
-    {
-        $selectedDistrict = $request->string('district')->toString();
-
-        $services = ServiceCenter::query()
-            ->with('category')
-            ->where('is_active', true)
-            ->where('visibility', 'public')
-            ->when($selectedDistrict !== '', fn ($query) => $query->where('district', $selectedDistrict))
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
-            ->paginate(9)
-            ->withQueryString();
-
-        return view('public.services.index', [
-            'services' => $services,
-            'districts' => ServiceCenter::query()
-                ->where('is_active', true)
-                ->where('visibility', 'public')
-                ->whereNotNull('district')
-                ->orderBy('district')
-                ->distinct()
-                ->pluck('district'),
-            'selectedDistrict' => $selectedDistrict,
-        ]);
-    }
-
-    public function showService(ServiceCenter $service): View
-    {
-        abort_unless($service->is_active && $service->visibility === 'public', 404);
-
-        $service->load('category');
-
-        $relatedServices = ServiceCenter::query()
-            ->where('is_active', true)
-            ->where('visibility', 'public')
-            ->whereKeyNot($service->getKey())
-            ->when($service->district !== null, fn ($query) => $query->where('district', $service->district))
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
-            ->limit(3)
-            ->get();
-
-        return view('public.services.show', [
-            'service' => $service,
-            'relatedServices' => $relatedServices,
         ]);
     }
 }

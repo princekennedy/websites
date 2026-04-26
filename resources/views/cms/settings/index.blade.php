@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Settings" eyebrow="CMS Runtime" heading="App settings" subheading="Manage public app labels, support contacts, and operational configuration values used at runtime.">
+<x-layouts.app title="Settings" eyebrow="CMS Runtime" heading="App settings" subheading="Manage public app labels, support contacts, and operational configuration values used at runtime.">
 
     @if (! auth()->user()?->hasCmsPermission('cms.manage.settings'))
         <div class="cms-card mb-6 bg-white/70 px-4 py-3 text-sm text-slate-500 dark:bg-white/5 dark:text-stone-400">
@@ -57,4 +57,4 @@
             @endif
         </div>
     </form>
-</x-cms.layouts.app>
+</x-layouts.app>

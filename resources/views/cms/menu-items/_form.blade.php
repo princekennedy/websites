@@ -11,10 +11,10 @@
 
         <div class="grid gap-5 md:grid-cols-2">
             <div>
-                <label for="type" class="text-sm font-medium text-stone-200">Target type</label>
-                <select id="type" name="type" class="mt-2 w-full rounded-2xl border border-white/10 bg-stone-950/60 px-4 py-3 text-white focus:border-emerald-400 focus:outline-none">
-                    @foreach ($typeOptions as $option)
-                        <option value="{{ $option }}" @selected(old('type', $item->type ?: 'content') === $option)>{{ $option }}</option>
+                <label for="layout_type" class="text-sm font-medium text-stone-200">Layout</label>
+                <select id="layout_type" name="layout_type" class="mt-2 w-full rounded-2xl border border-white/10 bg-stone-950/60 px-4 py-3 text-white focus:border-emerald-400 focus:outline-none">
+                    @foreach ($layoutOptions as $value => $label)
+                        <option value="{{ $value }}" @selected(old('layout_type', $item->normalizedLayoutType()) === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -56,6 +56,7 @@
                     </ul>
                 </div>
             </div>
+            <p class="mt-3 text-sm text-stone-400">Use `content:{id}` or `category:{id}` for CMS-linked pages. Use a full URL, `mailto:`, or `tel:` for external targets.</p>
         </div>
 
         <div>

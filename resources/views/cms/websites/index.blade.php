@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Websites" eyebrow="CMS Tenancy" heading="Website workspaces" subheading="Create and switch between website tenants for isolated content, settings, and navigation management.">
+<x-layouts.app title="Websites" eyebrow="CMS Tenancy" heading="Website workspaces" subheading="Create and switch between website tenants for isolated content, settings, and navigation management.">
     <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <section class="cms-card cms-gradient-card p-6">
             <div class="flex items-center justify-between gap-4">
@@ -66,4 +66,4 @@
             </form>
         </aside>
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

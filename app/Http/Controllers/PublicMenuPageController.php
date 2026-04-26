@@ -23,7 +23,7 @@ class PublicMenuPageController extends Controller
 
         [$categories, $contents, $context] = $this->resolvePageData($item);
 
-        return view('public.menu-pages.show', [
+        return view('designs.pages.menu-item-show', [
             'menuItem' => $item,
             'pageCategories' => $categories,
             'pageContents' => $contents,
@@ -137,7 +137,7 @@ class PublicMenuPageController extends Controller
             ];
         }
 
-        if ($item->type === 'external_url') {
+        if (filled($item->target_reference) && Str::startsWith((string) $item->target_reference, ['http://', 'https://', 'mailto:', 'tel:'])) {
             return [
                 'eyebrow' => 'External resource',
                 'description' => 'This menu item points to an external resource and does not have local content assigned yet.',

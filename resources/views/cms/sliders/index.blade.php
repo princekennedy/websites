@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Sliders" eyebrow="CMS Homepage" heading="Hero sliders" subheading="Manage homepage hero slides, captions, and call-to-action buttons from the backend.">
+<x-layouts.app title="Sliders" eyebrow="CMS Homepage" heading="Hero sliders" subheading="Manage homepage hero slides, captions, and call-to-action buttons from the backend.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.sliders'))
         <x-slot:headerAction>
             <a href="{{ route('cms.sliders.create') }}" class="inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 dark:shadow-none">New slide</a>
@@ -22,6 +22,7 @@
                             <p class="mt-2 text-sm text-slate-600 dark:text-stone-300">{{ $slider->caption ?: 'No caption added yet.' }}</p>
                             <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-500 dark:text-stone-400">
                                 <span>Slug: {{ $slider->slug }}</span>
+                                <span>Layout: {{ $slider->normalizedLayoutType() }}</span>
                                 <span>Sort order: {{ $slider->sort_order }}</span>
                                 <span>Buttons: {{ collect([$slider->primary_button_text, $slider->secondary_button_text])->filter()->count() }}</span>
                             </div>
@@ -54,4 +55,4 @@
     <div class="mt-6">
         {{ $sliders->links() }}
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

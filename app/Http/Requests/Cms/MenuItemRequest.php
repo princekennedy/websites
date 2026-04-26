@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests\Cms;
 
-use App\Models\MenuItem;
+use App\Enums\DesignLayoutType;
+use App\Support\CurrentWebsite;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,15 +24,17 @@ class MenuItemRequest extends FormRequest
      */
     public function rules(): array
     {
+        $websiteId = app(CurrentWebsite::class)->id();
+
         return [
-            'parent_id' => ['nullable', 'exists:menu_items,id'],
+            'parent_id' => ['nullable', Rule::exists('menu_items', 'id')->where(fn ($query) => $query->where('website_id', $websiteId))],
             'title' => ['required', 'string', 'max:120'],
-            'type' => ['required', Rule::in(MenuItem::TYPE_OPTIONS)],
+            'layout_type' => ['required', Rule::in(DesignLayoutType::values())],
             'target_reference' => ['nullable', 'string', 'max:255'],
             'route' => ['nullable', 'string', 'max:255'],
             'icon' => ['nullable', 'string', 'max:80'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'visibility' => ['required', Rule::in(MenuItem::VISIBILITY_OPTIONS)],
+            'visibility' => ['required', Rule::in(['public', 'private', 'restricted'])],
             'open_in_webview' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
         ];

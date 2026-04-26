@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use App\Models\MenuItem;
@@ -27,6 +28,8 @@ class Menu extends Model
         'name',
         'slug',
         'description',
+        'sort_order',
+        'layout_type',
         'location',
         'visibility',
         'is_active',
@@ -52,5 +55,10 @@ class Menu extends Model
     public function items(): HasMany
     {
         return $this->hasMany(MenuItem::class)->orderBy('sort_order');
+    }
+
+    public function normalizedLayoutType(): string
+    {
+        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
     }
 }

@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="View Category" eyebrow="Category Details" heading="{{ $category->name }}" subheading="Manage the contents associated with this category.">
+<x-layouts.app title="View Category" eyebrow="Category Details" heading="{{ $category->name }}" subheading="Manage the contents associated with this category.">
     <x-slot:headerAction>
         <a href="{{ route('cms.contents.create', ['category_id' => $category->id]) }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">Add content</a>
     </x-slot:headerAction>
@@ -58,4 +58,4 @@
             </table>
         </div>
     </section>
-</x-cms.layouts.app>
+</x-layouts.app>

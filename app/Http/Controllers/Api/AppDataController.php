@@ -6,11 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
 use App\Models\Content;
 use App\Models\ContentCategory;
-use App\Models\Faq;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\Quiz;
-use App\Models\ServiceCenter;
 use App\Models\Slider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,24 +50,6 @@ class AppDataController extends Controller
 
         $categories = $this->categoriesPayload($allowedContentVisibilities);
         $contents = $this->contentsPayload($allowedContentVisibilities, limit: 8, includeBlocks: true);
-        $faqs = $this->faqsPayload($allowedContentVisibilities);
-        $quizzes = Quiz::query()
-            ->withCount('questions')
-            ->where('status', 'published')
-            ->whereIn('visibility', $allowedContentVisibilities)
-            ->latest('published_at')
-            ->limit(6)
-            ->get()
-            ->map(fn (Quiz $quiz): array => [
-                'id' => $quiz->id,
-                'title' => $quiz->title,
-                'slug' => $quiz->slug,
-                'summary' => $quiz->summary,
-                'intro_text' => $quiz->intro_text,
-                'questions_count' => $quiz->questions_count,
-                'audience' => $quiz->audience,
-            ])->values()->all();
-        $services = $this->serviceCentersPayload($allowedContentVisibilities);
         $settings = AppSetting::query()
             ->where('is_public', true)
             ->orderBy('group')
@@ -80,6 +59,7 @@ class AppDataController extends Controller
                 'key' => $setting->key,
                 'label' => $setting->label,
                 'value' => $this->settingValue($setting),
+                'layout_type' => $setting->layout_type ?: 'default',
                 'group' => $setting->group,
                 'input_type' => $setting->input_type,
             ])->values()->all();
@@ -87,15 +67,13 @@ class AppDataController extends Controller
         return $this->respond('Application bootstrap loaded successfully.', [
             'menu' => [
                 'name' => $menu?->name,
+                'layout_type' => $menu?->layout_type ?: 'default',
                 'location' => $menu?->location,
                 'items' => $menu === null ? [] : $this->menuTree($menu->items),
             ],
             'hero_slides' => $this->heroSlidesPayload(),
             'categories' => $categories,
             'featured_contents' => $contents,
-            'faqs' => $faqs,
-            'quizzes' => $quizzes,
-            'services' => $services,
             'settings' => $settings,
         ]);
     }
@@ -118,6 +96,7 @@ class AppDataController extends Controller
             'id' => $menu->id,
             'name' => $menu->name,
             'slug' => $menu->slug,
+            'layout_type' => $menu->layout_type ?: 'default',
             'location' => $menu->location,
             'items' => $this->menuTree($menu->items),
         ]);
@@ -164,6 +143,7 @@ class AppDataController extends Controller
             'slug' => $content->slug,
             'summary' => $content->summary,
             'body' => $content->body,
+            'layout_type' => $content->layout_type ?: 'default',
             'content_type' => $content->content_type,
             'audience' => $content->audience,
             'featured_image_url' => $content->featuredImageUrl(),
@@ -177,72 +157,12 @@ class AppDataController extends Controller
             'blocks' => $content->blocks->map(fn ($block) => [
                 'id' => $block->id,
                 'block_type' => $block->block_type,
+                'layout_type' => $block->layout_type ?: 'default',
                 'title' => $block->title,
                 'body' => $block->body,
                 'sort_order' => $block->sort_order,
             ])->values()->all(),
         ]);
-    }
-
-    public function faqs(Request $request): JsonResponse
-    {
-        $faqs = collect($this->faqsPayload(
-            ['public'],
-            audience: $request->string('audience')->toString() ?: null,
-            category: $request->string('category')->toString() ?: null,
-        ));
-
-        return $this->respond('FAQs loaded successfully.', $faqs, ['count' => $faqs->count()]);
-    }
-
-    public function quizzes(Request $request): JsonResponse
-    {
-        $quizzes = Quiz::query()
-            ->with([
-                'questions' => fn ($query) => $query->where('is_active', true)->orderBy('sort_order'),
-                'questions.options' => fn ($query) => $query->orderBy('sort_order'),
-            ])
-            ->where('status', 'published')
-            ->whereIn('visibility', ['public'])
-            ->when($request->filled('audience'), fn ($query) => $query->where('audience', $request->string('audience')->toString()))
-            ->orderBy('title')
-            ->get()
-            ->map(fn (Quiz $quiz) => [
-                'id' => $quiz->id,
-                'title' => $quiz->title,
-                'slug' => $quiz->slug,
-                'summary' => $quiz->summary,
-                'intro_text' => $quiz->intro_text,
-                'audience' => $quiz->audience,
-                'published_at' => optional($quiz->published_at)->toIso8601String(),
-                'questions' => $quiz->questions->map(fn ($question) => [
-                    'id' => $question->id,
-                    'prompt' => $question->prompt,
-                    'help_text' => $question->help_text,
-                    'question_type' => $question->question_type,
-                    'sort_order' => $question->sort_order,
-                    'options' => $question->options->map(fn ($option) => [
-                        'id' => $option->id,
-                        'option_text' => $option->option_text,
-                        'feedback' => $option->feedback,
-                        'sort_order' => $option->sort_order,
-                    ])->values()->all(),
-                ])->values()->all(),
-            ])->values();
-
-        return $this->respond('Quizzes loaded successfully.', $quizzes, ['count' => $quizzes->count()]);
-    }
-
-    public function serviceCenters(Request $request): JsonResponse
-    {
-        $services = collect($this->serviceCentersPayload(
-            ['public'],
-            district: $request->string('district')->toString() ?: null,
-            audience: $request->string('audience')->toString() ?: null,
-            featuredOnly: $request->boolean('featured'),
-        ));
-
-        return $this->respond('Service centers loaded successfully.', $services, ['count' => $services->count()]);
     }
 
     public function notifications(): JsonResponse
@@ -276,6 +196,7 @@ class AppDataController extends Controller
                 'id' => $category->id,
                 'name' => $category->name,
                 'slug' => $category->slug,
+                'layout_type' => $category->layout_type ?: 'default',
                 'description' => $category->description,
                 'contents_count' => $category->contents_count,
             ])->values()->all();
@@ -292,6 +213,7 @@ class AppDataController extends Controller
                 'image' => $slide->imageUrl() ?: asset('seed/hero-slide-1.svg'),
                 'kicker' => $slide->kicker,
                 'title' => $slide->title,
+                'layout_type' => $slide->layout_type ?: 'default',
                 'description' => $slide->caption,
                 'buttons' => collect([
                     filled($slide->primary_button_text) ? [
@@ -378,6 +300,7 @@ class AppDataController extends Controller
                     'slug' => $content->slug,
                     'summary' => $content->summary,
                     'body' => $content->body,
+                    'layout_type' => $content->layout_type ?: 'default',
                     'content_type' => $content->content_type,
                     'audience' => $content->audience,
                     'featured_image_url' => $content->featuredImageUrl(),
@@ -394,6 +317,7 @@ class AppDataController extends Controller
                     $payload['blocks'] = $content->blocks->map(fn ($block): array => [
                         'id' => $block->id,
                         'block_type' => $block->block_type,
+                        'layout_type' => $block->layout_type ?: 'default',
                         'title' => $block->title,
                         'body' => $block->body,
                     ])->values()->all();
@@ -401,58 +325,6 @@ class AppDataController extends Controller
 
                 return $payload;
             })->values()->all();
-    }
-
-    private function faqsPayload(array $allowedVisibilities, ?string $audience = null, ?string $category = null): array
-    {
-        return Faq::query()
-            ->with('category')
-            ->where('is_published', true)
-            ->whereIn('visibility', $allowedVisibilities)
-            ->when($audience !== null, fn ($query) => $query->where('audience', $audience))
-            ->when($category !== null, function ($query) use ($category): void {
-                $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $category));
-            })
-            ->orderBy('sort_order')
-            ->limit(20)
-            ->get()
-            ->map(fn (Faq $faq): array => [
-                'id' => $faq->id,
-                'question' => $faq->question,
-                'slug' => $faq->slug,
-                'answer' => $faq->answer,
-                'category' => $faq->category?->name,
-                'audience' => $faq->audience,
-            ])->values()->all();
-    }
-
-    private function serviceCentersPayload(array $allowedVisibilities, ?string $district = null, ?string $audience = null, bool $featuredOnly = false): array
-    {
-        return ServiceCenter::query()
-            ->with('category')
-            ->where('is_active', true)
-            ->whereIn('visibility', $allowedVisibilities)
-            ->when($district !== null, fn ($query) => $query->where('district', $district))
-            ->when($audience !== null, fn ($query) => $query->where('audience', $audience))
-            ->when($featuredOnly, fn ($query) => $query->where('is_featured', true))
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
-            ->limit(20)
-            ->get()
-            ->map(fn (ServiceCenter $service): array => [
-                'id' => $service->id,
-                'name' => $service->name,
-                'slug' => $service->slug,
-                'district' => $service->district,
-                'physical_address' => $service->physical_address,
-                'summary' => $service->summary,
-                'service_hours' => $service->service_hours,
-                'contact_phone' => $service->contact_phone,
-                'contact_email' => $service->contact_email,
-                'services' => $service->services,
-                'is_featured' => $service->is_featured,
-                'category' => $service->category?->name,
-            ])->values()->all();
     }
 
     private function settingValue(AppSetting $setting): mixed
@@ -493,7 +365,7 @@ class AppDataController extends Controller
                 return [
                     'id' => $item->id,
                     'title' => $item->title,
-                    'type' => $item->type,
+                    'layout_type' => $item->layout_type ?: 'default',
                     'icon' => $item->icon,
                     'target_reference' => $item->target_reference,
                     'route' => $item->route,

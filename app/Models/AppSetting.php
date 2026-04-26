@@ -20,6 +20,7 @@ class AppSetting extends Model implements HasMedia
         'key',
         'label',
         'value',
+        'layout_type',
         'group',
         'input_type',
         'description',

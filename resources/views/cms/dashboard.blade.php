@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Dashboard" eyebrow="CMS Overview" heading="Delivery dashboard" subheading="This CMS now covers content, FAQs, quizzes, service directories, menus, and runtime settings aligned to the SRHR app scope in the technical documents.">
+<x-layouts.app title="Dashboard" eyebrow="CMS Overview" heading="Delivery dashboard" subheading="This CMS manages websites, content, sliders, menus, and runtime settings, with `default` as the current live design baseline.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.contents'))
         <x-slot:headerAction>
             <a href="{{ route('cms.contents.create') }}" class="inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 dark:shadow-none">Create content</a>
@@ -34,6 +34,10 @@
 
     <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <article class="cms-card cms-gradient-card p-5">
+            <p class="text-sm text-slate-500 dark:text-stone-400">Websites</p>
+            <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['websites'] }}</p>
+        </article>
+        <article class="cms-card cms-gradient-card p-5">
             <p class="text-sm text-slate-500 dark:text-stone-400">Categories</p>
             <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['categories'] }}</p>
         </article>
@@ -42,16 +46,8 @@
             <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['contents'] }}</p>
         </article>
         <article class="cms-card cms-gradient-card p-5">
-            <p class="text-sm text-slate-500 dark:text-stone-400">FAQs</p>
-            <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['faqs'] }}</p>
-        </article>
-        <article class="cms-card cms-gradient-card p-5">
-            <p class="text-sm text-slate-500 dark:text-stone-400">Quizzes</p>
-            <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['quizzes'] }}</p>
-        </article>
-        <article class="cms-card cms-gradient-card p-5">
-            <p class="text-sm text-slate-500 dark:text-stone-400">Services</p>
-            <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['services'] }}</p>
+            <p class="text-sm text-slate-500 dark:text-stone-400">Sliders</p>
+            <p class="cms-stat-number mt-3 text-4xl font-semibold">{{ $stats['sliders'] }}</p>
         </article>
         <article class="cms-card cms-gradient-card p-5">
             <p class="text-sm text-slate-500 dark:text-stone-400">Menus</p>
@@ -122,4 +118,4 @@
             </div>
         </article>
     </section>
-</x-cms.layouts.app>
+</x-layouts.app>

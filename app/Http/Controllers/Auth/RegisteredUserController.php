@@ -43,6 +43,8 @@ class RegisteredUserController extends Controller
             'is_active' => true,
         ]);
 
+        $website->ensureDefaultHomeMenu();
+
         $user->websites()->attach($website->id, [
             'role' => 'owner',
             'is_owner' => true,

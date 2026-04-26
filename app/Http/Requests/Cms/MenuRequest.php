@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cms;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Menu;
 use App\Support\CurrentWebsite;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,7 +32,8 @@ class MenuRequest extends FormRequest
             'name' => ['required', 'string', 'max:120'],
             'slug' => ['nullable', 'string', 'max:140', Rule::unique('menus', 'slug')->where(fn ($query) => $query->where('website_id', $websiteId))->ignore($menuId)],
             'description' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:80'],
+            'layout_type' => ['required', Rule::in(DesignLayoutType::values())],
+            'location' => ['nullable', 'string', 'max:255'],
             'visibility' => ['required', Rule::in(Menu::VISIBILITY_OPTIONS)],
             'is_active' => ['nullable', 'boolean'],
         ];

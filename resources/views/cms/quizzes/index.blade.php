@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Quizzes" eyebrow="CMS Interactivity" heading="Quiz library" subheading="Manage learning quizzes and the structured questions consumed by the Android app.">
+<x-layouts.app title="Quizzes" eyebrow="CMS Interactivity" heading="Quiz library" subheading="Manage learning quizzes and the structured questions consumed by the Android app.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.quizzes'))
         <x-slot:headerAction>
             <a href="{{ route('cms.quizzes.create') }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">New quiz</a>
@@ -43,4 +43,4 @@
     <div class="mt-6">
         {{ $quizzes->links() }}
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

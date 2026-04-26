@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cms;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Content;
 use App\Support\CurrentWebsite;
 use Illuminate\Foundation\Http\FormRequest;
@@ -30,6 +31,7 @@ class ContentRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:160'],
             'slug' => ['nullable', 'string', 'max:180', Rule::unique('contents', 'slug')->where(fn ($query) => $query->where('website_id', $websiteId))->ignore($contentId)],
+            'layout_type' => ['required', Rule::in(DesignLayoutType::values())],
             'summary' => ['nullable', 'string'],
             'body' => ['nullable', 'string'],
             'content_type' => ['required', Rule::in(Content::TYPE_OPTIONS)],

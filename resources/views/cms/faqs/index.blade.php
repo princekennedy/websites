@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="FAQs" eyebrow="CMS Knowledge Base" heading="Frequently asked questions" subheading="Maintain trusted answers for high-frequency SRHR questions surfaced in the Android app.">
+<x-layouts.app title="FAQs" eyebrow="CMS Knowledge Base" heading="Frequently asked questions" subheading="Maintain trusted answers for high-frequency SRHR questions surfaced in the Android app.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.faqs'))
         <x-slot:headerAction>
             <a href="{{ route('cms.faqs.create') }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">New FAQ</a>
@@ -43,4 +43,4 @@
     <div class="mt-6">
         {{ $faqs->links() }}
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

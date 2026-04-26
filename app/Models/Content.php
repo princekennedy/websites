@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use App\Models\ContentBlock;
@@ -39,6 +40,7 @@ class Content extends Model implements HasMedia
         'website_id',
         'title',
         'slug',
+        'layout_type',
         'summary',
         'body',
         'content_type',
@@ -111,5 +113,10 @@ class Content extends Model implements HasMedia
             ])
             ->values()
             ->all();
+    }
+
+    public function normalizedLayoutType(): string
+    {
+        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
     }
 }

@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Categories" eyebrow="CMS Taxonomy" heading="Content categories" subheading="Organize SRHR topics for app navigation, discovery, and permissions-aware publishing.">
+<x-layouts.app title="Categories" eyebrow="CMS Taxonomy" heading="Content categories" subheading="Organize SRHR topics for app navigation, discovery, and permissions-aware publishing.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.categories'))
         <x-slot:headerAction>
             <a href="{{ route('cms.categories.create') }}" class="inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 dark:shadow-none">New category</a>
@@ -11,6 +11,7 @@
                 <tr>
                     <th class="px-5 py-4 font-medium">Name</th>
                     <th class="px-5 py-4 font-medium">Slug</th>
+                    <th class="px-5 py-4 font-medium">Layout</th>
                     <th class="px-5 py-4 font-medium">Entries</th>
                     <th class="px-5 py-4 font-medium">Status</th>
                     <th class="px-5 py-4 font-medium text-right">Actions</th>
@@ -26,6 +27,7 @@
                             @endif
                         </td>
                         <td class="px-5 py-4 text-slate-500 dark:text-stone-400">{{ $category->slug }}</td>
+                        <td class="px-5 py-4 text-slate-500 dark:text-stone-400">{{ $category->normalizedLayoutType() }}</td>
                         <td class="px-5 py-4">{{ $category->contents_count }}</td>
                         <td class="px-5 py-4">
                             <span class="cms-chip px-3 py-1 text-xs uppercase tracking-[0.2em] {{ $category->is_active ? 'text-sky-600 dark:text-sky-300' : 'text-slate-500 dark:text-stone-400' }}">{{ $category->is_active ? 'Active' : 'Inactive' }}</span>
@@ -54,10 +56,10 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-5 py-8 text-center text-slate-500 dark:text-stone-400">No categories yet.</td>
+                        <td colspan="6" class="px-5 py-8 text-center text-slate-500 dark:text-stone-400">No categories yet.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

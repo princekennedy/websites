@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ContentCategory;
 use App\Models\Menu;
 use App\Models\User;
+use App\Models\Website;
 use Database\Seeders\CmsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -23,9 +24,6 @@ class CmsManagementTest extends TestCase
             'cms.access',
             'cms.manage.categories',
             'cms.manage.contents',
-            'cms.manage.faqs',
-            'cms.manage.quizzes',
-            'cms.manage.services',
             'cms.manage.sliders',
             'cms.manage.menus',
             'cms.manage.settings',
@@ -39,6 +37,17 @@ class CmsManagementTest extends TestCase
         $adminRole->syncPermissions($permissions);
 
         $user->assignRole($adminRole);
+        $website = Website::query()->create([
+            'name' => 'Test Website',
+            'slug' => 'test-website',
+            'is_active' => true,
+            'created_by' => $user->id,
+        ]);
+        $user->websites()->attach($website, [
+            'role' => 'owner',
+            'is_owner' => true,
+        ]);
+        $user->forceFill(['current_website_id' => $website->id])->save();
 
         $this->actingAs($user);
 
@@ -59,11 +68,9 @@ class CmsManagementTest extends TestCase
     {
         $this->signIn();
 
+        $this->get(route('cms.websites.index'))->assertOk();
         $this->get(route('cms.categories.index'))->assertOk();
         $this->get(route('cms.contents.index'))->assertOk();
-        $this->get(route('cms.faqs.index'))->assertOk();
-        $this->get(route('cms.quizzes.index'))->assertOk();
-        $this->get(route('cms.services.index'))->assertOk();
         $this->get(route('cms.sliders.index'))->assertOk();
         $this->get(route('cms.menus.index'))->assertOk();
         $this->get(route('cms.settings.index'))->assertOk();
@@ -76,7 +83,9 @@ class CmsManagementTest extends TestCase
         $this->post(route('cms.categories.store'), [
             'name' => 'Adolescent Health',
             'description' => 'Content focused on adolescent SRHR topics.',
+            'layout_type' => 'default',
             'sort_order' => 1,
+            'visibility' => 'public',
             'is_active' => 1,
         ])->assertRedirect(route('cms.categories.index'));
 
@@ -91,6 +100,7 @@ class CmsManagementTest extends TestCase
             'title' => 'Understanding consent',
             'summary' => 'Introductory consent guidance for young people.',
             'body' => 'Consent is clear, informed, and ongoing.',
+            'layout_type' => 'default',
             'content_type' => 'page',
             'category_id' => $category->id,
             'status' => 'published',
@@ -112,8 +122,10 @@ class CmsManagementTest extends TestCase
 
         $this->post(route('cms.menus.store'), [
             'name' => 'Home Navigation',
+            'layout_type' => 'default',
             'location' => 'home-primary',
             'description' => 'Main mobile navigation menu.',
+            'visibility' => 'public',
             'is_active' => 1,
         ])->assertRedirect();
 
@@ -126,7 +138,7 @@ class CmsManagementTest extends TestCase
 
         $this->post(route('cms.menus.items.store', $menu), [
             'title' => 'Get Help Now',
-            'type' => 'internal_route',
+            'layout_type' => 'default',
             'route' => '/help-now',
             'sort_order' => 1,
             'visibility' => 'public',
@@ -136,12 +148,12 @@ class CmsManagementTest extends TestCase
         $this->assertDatabaseHas('menu_items', [
             'menu_id' => $menu->id,
             'title' => 'Get Help Now',
-            'type' => 'internal_route',
+            'layout_type' => 'default',
             'route' => '/help-now',
         ]);
     }
 
-    public function test_menu_item_save_normalizes_dynamic_webview_payload(): void
+    public function test_menu_item_save_generates_dynamic_route_when_missing(): void
     {
         $this->seed(CmsSeeder::class);
 
@@ -152,9 +164,8 @@ class CmsManagementTest extends TestCase
 
         $this->post(route('cms.menus.items.store', $menu), [
             'title' => 'Ask an Expert',
-            'type' => 'internal_route',
+            'layout_type' => 'default',
             'target_reference' => 'content:12',
-            'route' => '/menu-pages/legacy-expert',
             'sort_order' => 1,
             'visibility' => 'public',
             'open_in_webview' => 1,
@@ -164,9 +175,9 @@ class CmsManagementTest extends TestCase
         $this->assertDatabaseHas('menu_items', [
             'menu_id' => $menu->id,
             'title' => 'Ask an Expert',
-            'type' => 'webview_page',
+            'layout_type' => 'default',
             'target_reference' => 'content:12',
-            'route' => null,
+            'route' => '/menu-item/ask-an-expert',
             'open_in_webview' => true,
         ]);
     }
@@ -181,6 +192,7 @@ class CmsManagementTest extends TestCase
         $this->post(route('cms.sliders.store'), [
             'title' => 'Trusted support when you need it most',
             'kicker' => 'Always available',
+            'layout_type' => 'default',
             'caption' => 'Give users a clear path to services and reliable information from the first screen.',
             'primary_button_text' => 'Find Support',
             'primary_button_link' => '#support',

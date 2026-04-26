@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="View Menu" eyebrow="Menu Details" heading="{{ $menu->name }}" subheading="Manage the navigation items for this menu.">
+<x-layouts.app title="View Menu" eyebrow="Menu Details" heading="{{ $menu->name }}" subheading="Manage the navigation items for this menu.">
     <x-slot:headerAction>
         <a href="{{ route('cms.menus.items.create', $menu) }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">Add item</a>
     </x-slot:headerAction>
@@ -24,7 +24,7 @@
                 <thead class="bg-white/50 text-slate-500 dark:bg-white/5 dark:text-stone-400">
                     <tr>
                         <th class="px-4 py-3 font-medium">Title</th>
-                        <th class="px-4 py-3 font-medium">Type</th>
+                        <th class="px-4 py-3 font-medium">Layout</th>
                         <th class="px-4 py-3 font-medium">Target</th>
                         <th class="px-4 py-3 font-medium">Flags</th>
                         <th class="px-4 py-3 font-medium text-right">Actions</th>
@@ -37,7 +37,7 @@
                                 <p class="font-medium text-slate-900 dark:text-white">{{ $item->title }}</p>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-stone-400">Sort order: {{ $item->sort_order }}{{ $item->parent ? ' | Child of '.$item->parent->title : '' }}</p>
                             </td>
-                            <td class="px-4 py-3 uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ $item->type }}</td>
+                            <td class="px-4 py-3 uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ $item->normalizedLayoutType() }}</td>
                             <td class="px-4 py-3 text-slate-500 dark:text-stone-400">{{ $item->target_reference ?: ($item->route ?: 'None') }}</td>
                             <td class="px-4 py-3 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ ucfirst($item->visibility ?: 'public') }} | {{ $item->is_active ? 'Active' : 'Inactive' }}{{ $item->open_in_webview ? ' | WebView' : '' }}</td>
                             <td class="px-4 py-3">
@@ -64,4 +64,4 @@
             </table>
         </div>
     </section>
-</x-cms.layouts.app>
+</x-layouts.app>

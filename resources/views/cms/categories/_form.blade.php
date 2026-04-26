@@ -29,6 +29,26 @@
             <label for="description" class="text-sm font-medium text-slate-900 dark:text-stone-200">Description</label>
             <textarea id="description" name="description" rows="5" class="cms-textarea mt-2">{{ old('description', $category->description) }}</textarea>
         </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+            <div>
+                <label for="visibility" class="text-sm font-medium text-slate-900 dark:text-stone-200">Visibility</label>
+                <select id="visibility" name="visibility" class="cms-select mt-2">
+                    @foreach ($visibilityOptions as $option)
+                        <option value="{{ $option }}" @selected(old('visibility', $category->visibility ?: 'public') === $option)>{{ ucfirst($option) }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label for="layout_type" class="text-sm font-medium text-slate-900 dark:text-stone-200">Layout</label>
+                <select id="layout_type" name="layout_type" class="cms-select mt-2">
+                    @foreach ($layoutOptions as $value => $label)
+                        <option value="{{ $value }}" @selected(old('layout_type', $category->normalizedLayoutType()) === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
     </section>
 
     <aside class="cms-card cms-gradient-card space-y-5 p-6">

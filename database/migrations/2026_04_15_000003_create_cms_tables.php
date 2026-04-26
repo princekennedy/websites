@@ -56,7 +56,7 @@ return new class extends Migration
             $table->foreignId('website_id')->constrained('websites')->cascadeOnDelete();
             $table->string('title');
             $table->string('slug');
-            $table->string('layout_type', 40)->default('default');
+            $table->string('layout_type')->default('default');
             $table->text('summary')->nullable();
             $table->longText('body')->nullable();
             $table->string('content_type')->default('page');
@@ -98,6 +98,7 @@ return new class extends Migration
             $table->foreignId('website_id')->constrained('websites')->cascadeOnDelete();
             $table->string('name');
             $table->string('slug');
+            $table->unsignedInteger('sort_order')->default(0);
             $table->text('description')->nullable();
             $table->string('layout_type')->default('default'); // design layout
             $table->string('location')->nullable(); // header, footer etc

@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Content" eyebrow="CMS Content" heading="Content library" subheading="Manage reusable pages and educational content that the Android app can render dynamically.">
+<x-layouts.app title="Content" eyebrow="CMS Content" heading="Content library" subheading="Manage reusable pages and educational content that the Android app can render dynamically.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.contents'))
         <x-slot:headerAction>
             <a href="{{ route('cms.contents.create') }}" class="inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 dark:shadow-none">New content</a>
@@ -20,6 +20,7 @@
                         <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-500 dark:text-stone-400">
                             <span>Category: {{ $content->category?->name ?? 'Unassigned' }}</span>
                             <span>Slug: {{ $content->slug }}</span>
+                            <span>Layout: {{ $content->normalizedLayoutType() }}</span>
                             <span>Blocks: {{ $content->blocks->count() }}</span>
                         </div>
                     </div>
@@ -52,4 +53,4 @@
     <div class="mt-6">
         {{ $contents->links() }}
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

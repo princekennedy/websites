@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DesignLayoutType;
 use App\Models\Concerns\BelongsToWebsite;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use App\Models\Content;
@@ -26,7 +27,9 @@ class ContentCategory extends Model
         'website_id',
         'menu_item_id',
         'name',
+        'visibility',
         'slug',
+        'layout_type',
         'description',
         'sort_order',
         'is_active',
@@ -47,6 +50,11 @@ class ContentCategory extends Model
     protected function getSlugSourceColumn(): string
     {
         return 'name';
+    }
+
+    public function normalizedLayoutType(): string
+    {
+        return DesignLayoutType::tryFrom((string) $this->layout_type)?->value ?? DesignLayoutType::Default->value;
     }
 
     public function contents(): HasMany

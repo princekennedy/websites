@@ -1,4 +1,4 @@
-<x-cms.layouts.app title="Services" eyebrow="CMS Referrals" heading="Service directory" subheading="Manage youth-friendly facilities, referral points, and practical contact information for the app.">
+<x-layouts.app title="Services" eyebrow="CMS Referrals" heading="Service directory" subheading="Manage youth-friendly facilities, referral points, and practical contact information for the app.">
     @if (auth()->user()?->hasCmsPermission('cms.manage.services'))
         <x-slot:headerAction>
             <a href="{{ route('cms.services.create') }}" class="inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-200/50 transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 dark:shadow-none">New service</a>
@@ -49,4 +49,4 @@
     <div class="mt-6">
         {{ $services->links() }}
     </div>
-</x-cms.layouts.app>
+</x-layouts.app>

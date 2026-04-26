@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Cms;
 
+use App\Enums\DesignLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\ContentCategoryRequest;
+use App\Models\Content;
 use App\Models\ContentCategory;
 use App\Models\MenuItem;
 use Illuminate\Contracts\View\View;
@@ -27,6 +29,8 @@ class ContentCategoryController extends Controller
         return view('cms.categories.create', [
             'category' => new ContentCategory(),
             'menuItemOptions' => $this->menuItemOptions(),
+            'layoutOptions' => DesignLayoutType::options(),
+            'visibilityOptions' => Content::VISIBILITY_OPTIONS,
         ]);
     }
 
@@ -56,6 +60,8 @@ class ContentCategoryController extends Controller
         return view('cms.categories.edit', [
             'category' => $category,
             'menuItemOptions' => $this->menuItemOptions(),
+            'layoutOptions' => DesignLayoutType::options(),
+            'visibilityOptions' => Content::VISIBILITY_OPTIONS,
         ]);
     }
 
@@ -84,7 +90,7 @@ class ContentCategoryController extends Controller
     private function menuItemOptions()
     {
         return MenuItem::query()
-            ->where('type', 'webview_page')
+            ->where('is_active', true)
             ->orderBy('title')
             ->get(['id', 'title']);
     }

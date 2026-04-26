@@ -21,7 +21,19 @@
   </script>
 </head>
 <body class="bg-slate-50 text-slate-800 transition-colors duration-200 dark:bg-slate-900 dark:text-slate-100">
-  @include('components.layouts.site-header')
+  @php
+    $allowedChromeLayouts = ['default', 'minimal', 'editorial', 'card'];
+    $menuLayoutType = collect($siteMenus ?? [])->pluck('layout_type')->first();
+    $requestedChromeLayout = data_get($publicSite ?? [], 'theme.chrome_layout', $menuLayoutType);
+    $chromeLayoutType = in_array($requestedChromeLayout, $allowedChromeLayouts, true)
+      ? $requestedChromeLayout
+      : 'default';
+
+    $headerView = 'designs.headers.'.$chromeLayoutType;
+    $footerView = 'designs.footers.'.$chromeLayoutType;
+  @endphp
+
+  @include(view()->exists($headerView) ? $headerView : 'designs.headers.default')
 
   <main class="pt-[65px]">
     @if (session('status'))
@@ -35,7 +47,7 @@
     {{ $slot }}
   </main>
 
-  @include('components.layouts.site-footer')
+  @include(view()->exists($footerView) ? $footerView : 'designs.footers.default')
 
   <script>
     const menuBtn = document.getElementById('menuBtn');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cms;
 
+use App\Enums\DesignLayoutType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cms\MenuRequest;
 use App\Models\Menu;
@@ -25,6 +26,7 @@ class MenuController extends Controller
         return view('cms.menus.create', [
             'menu' => new Menu(),
             'visibilityOptions' => Menu::VISIBILITY_OPTIONS,
+            'layoutOptions' => DesignLayoutType::options(),
         ]);
     }
 
@@ -52,6 +54,7 @@ class MenuController extends Controller
         return view('cms.menus.edit', [
             'menu' => $menu,
             'visibilityOptions' => Menu::VISIBILITY_OPTIONS,
+            'layoutOptions' => DesignLayoutType::options(),
         ]);
     }
 

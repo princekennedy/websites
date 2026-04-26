@@ -16,11 +16,13 @@
 
         <div>
             <label for="layout_type" class="text-sm font-medium text-slate-900 dark:text-stone-200">Layout</label>
-            <select id="layout_type" name="layout_type" class="cms-select mt-2">
-                @foreach ($layoutOptions as $value => $label)
-                    <option value="{{ $value }}" @selected(old('layout_type', $content->normalizedLayoutType()) === $value)>{{ $label }}</option>
-                @endforeach
-            </select>
+            <x-cms.layout-picker
+                name="layout_type"
+                section="content"
+                :options="$layoutOptions"
+                :value="old('layout_type', $content->normalizedLayoutType())"
+                label="Content"
+            />
             <p class="mt-2 text-xs text-slate-500 dark:text-stone-500">Layouts are rendered from resources/views/designs/content using default as the fallback style.</p>
         </div>
 

@@ -17,7 +17,8 @@
 @endphp
 
 {{-- ─── Visible display + trigger button ──────────────────────────────────── --}}
-<div class="mt-2 flex items-stretch gap-2" data-picker-id="{{ $pickerId }}" data-select-id="{{ $selectId }}">
+<div class="mt-2 space-y-2" data-picker-id="{{ $pickerId }}" data-select-id="{{ $selectId }}">
+    <div class="flex items-stretch gap-2">
 
     {{-- Hidden native select (submitted with the form) --}}
     <select id="{{ $selectId }}" name="{{ $name }}" class="sr-only" aria-hidden="true" tabindex="-1">
@@ -48,29 +49,31 @@
         </svg>
         Preview Layouts
     </button>
+    </div>
+    <p class="hidden text-xs font-medium text-emerald-600 dark:text-emerald-400 lp-selected-hint"></p>
 </div>
 
 {{-- ─── Modal ───────────────────────────────────────────────────────────────── --}}
 <div
     id="{{ $pickerId }}-modal"
-    class="fixed inset-0 z-[200] hidden"
+    class="fixed inset-0 z-[220] hidden isolate"
     role="dialog"
     aria-modal="true"
     aria-labelledby="{{ $pickerId }}-title"
 >
     {{-- Backdrop --}}
     <div
-        class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+        class="absolute inset-0 bg-black/85"
         onclick="lpClose('{{ $pickerId }}')"
         aria-hidden="true"
     ></div>
 
-    {{-- Scrollable panel --}}
-    <div class="relative flex h-full flex-col overflow-y-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div class="mx-auto w-full max-w-6xl">
+    <div class="relative flex min-h-full items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
+            <div class="max-h-[90vh] overflow-y-auto p-5 sm:p-6 lg:p-7">
 
             {{-- Modal header --}}
-            <div class="mb-6 flex items-start justify-between gap-4">
+            <div class="mb-6 flex items-start justify-between gap-4 border-b border-slate-800 pb-5">
                 <div>
                     <h2 id="{{ $pickerId }}-title" class="text-2xl font-bold text-white">
                         Choose a {{ $label }} Layout
@@ -82,7 +85,7 @@
                 </div>
                 <button
                     type="button"
-                    class="mt-0.5 flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20"
+                    class="mt-0.5 flex shrink-0 items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
                     onclick="lpClose('{{ $pickerId }}')"
                     aria-label="Close layout picker"
                 >
@@ -99,16 +102,15 @@
                     @php [$shortName, $shortDesc] = $labelParts($layoutLabel); @endphp
 
                     <div
-                        class="lp-card group overflow-hidden rounded-3xl border-2 transition duration-200 {{ (string) $layoutValue === (string) $value ? 'border-sky-400' : 'border-white/10 hover:border-sky-400/50' }}"
+                        class="lp-card group overflow-hidden rounded-3xl border-2 transition duration-200 {{ (string) $layoutValue === (string) $value ? 'border-sky-400' : 'border-slate-700 hover:border-sky-400/50' }}"
                         id="{{ $pickerId }}-card-{{ $layoutValue }}"
                         data-layout="{{ $layoutValue }}"
                     >
                         {{-- Scaled iframe preview --}}
                         <div
-                            class="lp-preview-wrapper relative overflow-hidden bg-slate-900 cursor-pointer"
+                            class="lp-preview-wrapper relative overflow-hidden bg-slate-900"
                             style="height: 280px;"
-                            onclick="lpOpen('{{ $pickerId }}')"
-                            title="Click to browse all layouts"
+                            title="Layout preview"
                         >
                             <iframe
                                 data-src="{{ route('cms.layout-preview', ['section' => $section, 'layout' => $layoutValue]) }}"
@@ -153,6 +155,7 @@
 
             {{-- Bottom spacer so last cards aren't flush with viewport bottom --}}
             <div class="h-8"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -220,10 +223,15 @@
         const select    = document.getElementById(selectId);
         const labelEl   = wrapper.querySelector('.lp-display-label');
         const valueEl   = wrapper.querySelector('.lp-display-value');
+        const hintEl    = wrapper.querySelector('.lp-selected-hint');
 
         if (select)  select.value          = value;
         if (labelEl) labelEl.textContent   = label;
         if (valueEl) valueEl.textContent   = value;
+        if (hintEl) {
+            hintEl.textContent = 'Selected: ' + label + '. Click Save to update the database.';
+            hintEl.classList.remove('hidden');
+        }
 
         // Update card borders + button states inside this modal.
         const modal = document.getElementById(pickerId + '-modal');

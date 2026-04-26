@@ -12,11 +12,13 @@
         <div class="grid gap-5 md:grid-cols-2">
             <div>
                 <label for="layout_type" class="text-sm font-medium text-stone-200">Layout</label>
-                <select id="layout_type" name="layout_type" class="mt-2 w-full rounded-2xl border border-white/10 bg-stone-950/60 px-4 py-3 text-white focus:border-emerald-400 focus:outline-none">
-                    @foreach ($layoutOptions as $value => $label)
-                        <option value="{{ $value }}" @selected(old('layout_type', $item->normalizedLayoutType()) === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
+                <x-cms.layout-picker
+                    name="layout_type"
+                    section="menu-items"
+                    :options="$layoutOptions"
+                    :value="old('layout_type', $item->normalizedLayoutType())"
+                    label="Menu Item"
+                />
             </div>
 
             <div>

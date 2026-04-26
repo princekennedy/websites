@@ -42,11 +42,13 @@
 
             <div>
                 <label for="layout_type" class="text-sm font-medium text-slate-900 dark:text-stone-200">Layout</label>
-                <select id="layout_type" name="layout_type" class="cms-select mt-2">
-                    @foreach ($layoutOptions as $value => $label)
-                        <option value="{{ $value }}" @selected(old('layout_type', $category->normalizedLayoutType()) === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
+                <x-cms.layout-picker
+                    name="layout_type"
+                    section="content-categories"
+                    :options="$layoutOptions"
+                    :value="old('layout_type', $category->normalizedLayoutType())"
+                    label="Category"
+                />
             </div>
         </div>
     </section>

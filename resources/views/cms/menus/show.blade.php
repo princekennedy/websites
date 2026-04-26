@@ -1,6 +1,21 @@
 <x-layouts.app title="View Menu" eyebrow="Menu Details" heading="{{ $menu->name }}" subheading="Manage the navigation items for this menu.">
+    @php
+        $menuItemLayoutOptions = \App\Support\DesignLayouts::menuItemOptions();
+    @endphp
+
     <x-slot:headerAction>
-        <a href="{{ route('cms.menus.items.create', $menu) }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">Add item</a>
+        <div class="flex items-center gap-2">
+            <x-cms.layout-preview-launcher
+                section="menu-items"
+                layout="default"
+                :options="$menuItemLayoutOptions"
+                :params="['menu_id' => $menu->id]"
+                title="Menu Layout Preview"
+                button-label="Preview Menu"
+                button-class="inline-flex items-center rounded-full bg-sky-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-600"
+            />
+            <a href="{{ route('cms.menus.items.create', $menu) }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">Add item</a>
+        </div>
     </x-slot:headerAction>
 
     <div class="mb-6 flex gap-3">
@@ -19,8 +34,11 @@
             <a href="{{ route('cms.menus.items.create', $menu) }}" class="text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-300">Create item</a>
         </div>
 
-        <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-white/10">
-            <table class="min-w-full divide-y divide-slate-200/70 text-left text-sm dark:divide-white/10">
+        <x-cms.list-view-switcher storage-key="cms:list-view:menu-show" target-id="cms-listing-menu-show" default="table" />
+
+        <div id="cms-listing-menu-show" class="mt-5">
+            <div data-view-panel="table" class="overflow-hidden rounded-2xl border border-slate-200/70 dark:border-white/10">
+                <table class="min-w-full divide-y divide-slate-200/70 text-left text-sm dark:divide-white/10">
                 <thead class="bg-white/50 text-slate-500 dark:bg-white/5 dark:text-stone-400">
                     <tr>
                         <th class="px-4 py-3 font-medium">Title</th>
@@ -42,6 +60,15 @@
                             <td class="px-4 py-3 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ ucfirst($item->visibility ?: 'public') }} | {{ $item->is_active ? 'Active' : 'Inactive' }}{{ $item->open_in_webview ? ' | WebView' : '' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex justify-end gap-2">
+                                    <x-cms.layout-preview-launcher
+                                        section="menu-items"
+                                        :layout="$item->normalizedLayoutType()"
+                                        :options="$menuItemLayoutOptions"
+                                        :params="['menu_item_id' => $item->id]"
+                                        title="Menu Item Layout Preview"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                    </x-cms.layout-preview-launcher>
                                     <a href="{{ route('cms.menus.items.edit', [$menu, $item]) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-white/5 dark:text-stone-300 dark:hover:bg-white/10 dark:hover:text-white" title="Edit">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
                                     </a>
@@ -60,8 +87,41 @@
                             <td colspan="5" class="px-4 py-8 text-center text-slate-500 dark:text-stone-400">No items in this menu yet.</td>
                         </tr>
                     @endforelse
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
+            <div data-view-panel="card" class="hidden grid gap-4 md:grid-cols-2">
+                @forelse ($menu->items as $item)
+                    <article class="rounded-2xl border border-slate-200/70 bg-white/70 p-5 dark:border-white/10 dark:bg-slate-950/30">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h4 class="font-semibold text-slate-900 dark:text-white">{{ $item->title }}</h4>
+                                <p class="mt-1 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ ucfirst($item->visibility ?: 'public') }} | {{ $item->is_active ? 'Active' : 'Inactive' }}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <x-cms.layout-preview-launcher
+                                    section="menu-items"
+                                    :layout="$item->normalizedLayoutType()"
+                                    :options="$menuItemLayoutOptions"
+                                    :params="['menu_item_id' => $item->id]"
+                                    title="Menu Item Layout Preview"
+                                    button-class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition hover:bg-sky-100 hover:text-sky-700 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20"
+                                >
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                </x-cms.layout-preview-launcher>
+                                <a href="{{ route('cms.menus.items.edit', [$menu, $item]) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-white/5 dark:text-stone-300 dark:hover:bg-white/10 dark:hover:text-white" title="Edit">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-sm text-slate-500 dark:text-stone-400">{{ $item->target_reference ?: ($item->route ?: 'None') }}</p>
+                        <p class="mt-2 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">Layout: {{ $item->normalizedLayoutType() }}</p>
+                    </article>
+                @empty
+                    <article class="cms-empty-state p-10 text-center md:col-span-2">No items in this menu yet.</article>
+                @endforelse
+            </div>
         </div>
     </section>
 </x-layouts.app>

@@ -21,11 +21,13 @@
 
         <div>
             <label for="layout_type" class="text-sm font-medium text-slate-900 dark:text-stone-200">Layout</label>
-            <select id="layout_type" name="layout_type" class="cms-input mt-2">
-                @foreach ($layoutOptions as $value => $label)
-                    <option value="{{ $value }}" @selected(old('layout_type', $menu->normalizedLayoutType()) === $value)>{{ $label }}</option>
-                @endforeach
-            </select>
+            <x-cms.layout-picker
+                name="layout_type"
+                section="menu-items"
+                :options="$layoutOptions"
+                :value="old('layout_type', $menu->normalizedLayoutType())"
+                label="Menu"
+            />
             <p class="mt-2 text-sm text-slate-500 dark:text-stone-400">Menu item pages use templates from resources/views/designs/menu-items with default as fallback.</p>
         </div>
     </section>

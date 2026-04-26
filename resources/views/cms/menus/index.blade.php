@@ -1,13 +1,69 @@
 <x-layouts.app title="Menus" eyebrow="CMS Navigation" heading="Menu builder" subheading="Create database-driven navigation structures that the app can request and render dynamically.">
+    @php
+        $menuItemLayoutOptions = \App\Support\DesignLayouts::menuItemOptions();
+    @endphp
+
     @if (auth()->user()?->hasCmsPermission('cms.manage.menus'))
         <x-slot:headerAction>
             <a href="{{ route('cms.menus.create') }}" class="inline-flex items-center rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-stone-950 transition hover:bg-emerald-300">New menu</a>
         </x-slot:headerAction>
     @endif
 
-    <div class="grid gap-4 xl:grid-cols-2">
-        @forelse ($menus as $menu)
-            <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
+    <x-cms.list-view-switcher storage-key="cms:list-view:menus" target-id="cms-listing-menus" default="card" />
+
+    <div id="cms-listing-menus">
+        <div data-view-panel="table" class="hidden">
+            <div class="cms-table-wrap">
+                <table class="min-w-full divide-y divide-slate-200/70 text-left text-sm dark:divide-white/10">
+                    <thead class="bg-white/50 text-slate-500 dark:bg-white/5 dark:text-stone-400">
+                        <tr>
+                            <th class="px-5 py-4 font-medium">Name</th>
+                            <th class="px-5 py-4 font-medium">Location</th>
+                            <th class="px-5 py-4 font-medium">Visibility</th>
+                            <th class="px-5 py-4 font-medium">Items</th>
+                            <th class="px-5 py-4 font-medium text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-white/5">
+                        @forelse ($menus as $menu)
+                            <tr class="bg-white/70 text-slate-700 dark:bg-slate-950/30 dark:text-stone-200">
+                                <td class="px-5 py-4">
+                                    <p class="font-medium text-slate-900 dark:text-white">{{ $menu->name }}</p>
+                                    <p class="mt-1 text-xs text-slate-500 dark:text-stone-400">{{ \Illuminate\Support\Str::limit($menu->description ?: 'No description yet.', 120) }}</p>
+                                </td>
+                                <td class="px-5 py-4 text-slate-500 dark:text-stone-400">{{ $menu->location ?: 'Not set' }}</td>
+                                <td class="px-5 py-4 text-xs uppercase tracking-[0.15em] text-slate-500 dark:text-stone-400">{{ ucfirst($menu->visibility ?: 'public') }}</td>
+                                <td class="px-5 py-4 text-slate-500 dark:text-stone-400">{{ $menu->items_count }}</td>
+                                <td class="px-5 py-4">
+                                    <div class="flex justify-end gap-2">
+                                        <x-cms.layout-preview-launcher
+                                            section="menu-items"
+                                            layout="default"
+                                            :options="$menuItemLayoutOptions"
+                                            :params="['menu_id' => $menu->id]"
+                                            title="Menu Layout Preview"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                        </x-cms.layout-preview-launcher>
+                                        <a href="{{ route('cms.menus.show', $menu) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition hover:bg-sky-100 hover:text-sky-700 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20" title="View items">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-5 py-8 text-center text-slate-500 dark:text-stone-400">No menus yet.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div data-view-panel="card" class="grid gap-4 xl:grid-cols-2">
+            @forelse ($menus as $menu)
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h3 class="text-xl font-semibold text-white">{{ $menu->name }}</h3>
@@ -27,6 +83,16 @@
                 <div class="mt-6 flex gap-3">
                     @if (auth()->user()?->hasCmsPermission('cms.manage.menus'))
                         <div class="flex gap-2">
+                            <x-cms.layout-preview-launcher
+                                section="menu-items"
+                                layout="default"
+                                :options="$menuItemLayoutOptions"
+                                :params="['menu_id' => $menu->id]"
+                                title="Menu Layout Preview"
+                                button-class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition hover:bg-sky-100 hover:text-sky-700 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20"
+                            >
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                            </x-cms.layout-preview-launcher>
                             <a href="{{ route('cms.menus.show', $menu) }}" class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-600 transition hover:bg-sky-100 hover:text-sky-700 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20" title="View items">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
                             </a>
@@ -46,10 +112,11 @@
                     @endif
                 </div>
             </article>
-        @empty
-            <article class="rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center text-stone-400 xl:col-span-2">
-                No menus yet.
-            </article>
-        @endforelse
+            @empty
+                <article class="rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center text-stone-400 xl:col-span-2">
+                    No menus yet.
+                </article>
+            @endforelse
+        </div>
     </div>
 </x-layouts.app>

@@ -86,7 +86,6 @@ class LayoutPreviewController extends Controller
         $categoryId = request()->integer('category_id');
 
         $category = ContentCategory::query()
-            ->with(['contents' => fn ($q) => $q->where('status', 'published')->latest('published_at')->limit(12)])
             ->when($categoryId > 0, fn ($query) => $query->whereKey($categoryId))
             ->where('is_active', true)
             ->first() ?? new ContentCategory([
@@ -94,7 +93,19 @@ class LayoutPreviewController extends Controller
                 'description' => 'A description of this topic category and the published content it contains.',
             ]);
 
-        $contents = $category->relationLoaded('contents') ? $category->contents : collect();
+        $contents = $category->exists
+            ? $category->contents()
+                ->where('status', 'published')
+                ->where('visibility', 'public')
+                ->latest('published_at')
+                ->paginate(9)
+                ->withQueryString()
+            : Content::query()
+                ->where('status', 'published')
+                ->where('visibility', 'public')
+                ->latest('published_at')
+                ->paginate(9)
+                ->withQueryString();
 
         return compact('category', 'contents');
     }

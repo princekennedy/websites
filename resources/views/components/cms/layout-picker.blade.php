@@ -63,7 +63,7 @@
 >
     {{-- Backdrop --}}
     <div
-        class="absolute inset-0 bg-black/85"
+        class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
         onclick="lpClose('{{ $pickerId }}')"
         aria-hidden="true"
     ></div>
@@ -109,12 +109,12 @@
                         {{-- Scaled iframe preview --}}
                         <div
                             class="lp-preview-wrapper relative overflow-hidden bg-slate-900"
-                            style="height: 280px;"
+                            style="height: max(280px, 50vh); min-height: 50vh;"
                             title="Layout preview"
                         >
                             <iframe
                                 data-src="{{ route('cms.layout-preview', ['section' => $section, 'layout' => $layoutValue]) }}"
-                                style="width: 1200px; height: 700px; transform-origin: top left; border: none; pointer-events: none;"
+                                style="position: absolute; top: 0; left: 50%; width: 1200px; height: 700px; transform-origin: top center; border: none; pointer-events: none;"
                                 title="{{ $shortName }} layout preview"
                             ></iframe>
 
@@ -164,14 +164,21 @@
 @once
 <script>
 (function () {
+    const PREVIEW_WIDTH = 1200;
+    const PREVIEW_HEIGHT = 700;
+
     // Scale each iframe inside a .lp-preview-wrapper to fit its container.
     function scalePreview(wrapper) {
         const iframe = wrapper.querySelector('iframe');
         if (!iframe) return;
-        const scale = wrapper.offsetWidth / 1200;
-        iframe.style.transform = 'scale(' + scale + ')';
-        // Adjust wrapper height to match visible iframe area.
-        wrapper.style.height = Math.round(700 * scale) + 'px';
+
+        const minHeight = Math.max(Math.round(window.innerHeight * 0.5), 280);
+        const widthScale = wrapper.offsetWidth / PREVIEW_WIDTH;
+        const heightScale = minHeight / PREVIEW_HEIGHT;
+        const scale = Math.max(widthScale, heightScale);
+
+        iframe.style.transform = 'translateX(-50%) scale(' + scale + ')';
+        wrapper.style.height = Math.max(Math.round(PREVIEW_HEIGHT * scale), minHeight) + 'px';
     }
 
     // Load the iframes inside a modal (lazy — only when modal opens).

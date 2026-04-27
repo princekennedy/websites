@@ -187,6 +187,128 @@ body {
     color: var(--cms-accent);
 }
 
+.cms-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.cms-action-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cms-action-group--end {
+    justify-content: flex-end;
+}
+
+.cms-action-group form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.cms-action-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.22);
+}
+
+.cms-action-btn:hover {
+    transform: translateY(-1px);
+}
+
+.cms-action-btn svg {
+    height: 1rem;
+    width: 1rem;
+}
+
+.cms-action-btn-sm {
+    height: 2rem;
+    width: 2rem;
+}
+
+.cms-action-btn-md {
+    height: 2.25rem;
+    width: 2.25rem;
+}
+
+.cms-action-btn--preview {
+    border-color: rgba(14, 165, 233, 0.24);
+    background: rgba(14, 165, 233, 0.1);
+    color: #0369a1;
+}
+
+.cms-action-btn--preview:hover {
+    border-color: rgba(14, 165, 233, 0.4);
+    background: rgba(14, 165, 233, 0.18);
+    color: #075985;
+}
+
+.cms-action-btn--edit {
+    border-color: var(--cms-border);
+    background: var(--cms-surface-soft);
+    color: #475569;
+}
+
+.cms-action-btn--edit:hover {
+    border-color: var(--cms-border-strong);
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.cms-action-btn--delete {
+    border-color: rgba(225, 29, 72, 0.2);
+    background: rgba(225, 29, 72, 0.08);
+    color: #be123c;
+}
+
+.cms-action-btn--delete:hover {
+    border-color: rgba(225, 29, 72, 0.36);
+    background: rgba(225, 29, 72, 0.16);
+    color: #9f1239;
+}
+
+html.dark .cms-action-btn--preview {
+    border-color: rgba(56, 189, 248, 0.25);
+    background: rgba(56, 189, 248, 0.13);
+    color: #7dd3fc;
+}
+
+html.dark .cms-action-btn--preview:hover {
+    border-color: rgba(56, 189, 248, 0.38);
+    background: rgba(56, 189, 248, 0.22);
+    color: #bae6fd;
+}
+
+html.dark .cms-action-btn--edit {
+    border-color: rgba(148, 163, 184, 0.22);
+    background: rgba(148, 163, 184, 0.08);
+    color: #e2e8f0;
+}
+
+html.dark .cms-action-btn--edit:hover {
+    border-color: rgba(148, 163, 184, 0.38);
+    background: rgba(148, 163, 184, 0.18);
+    color: #ffffff;
+}
+
+html.dark .cms-action-btn--delete {
+    border-color: rgba(251, 113, 133, 0.25);
+    background: rgba(244, 63, 94, 0.14);
+    color: #fda4af;
+}
+
+html.dark .cms-action-btn--delete:hover {
+    border-color: rgba(251, 113, 133, 0.38);
+    background: rgba(244, 63, 94, 0.22);
+    color: #fecdd3;
+}
+
 .cms-input,
 .cms-select,
 .cms-textarea {

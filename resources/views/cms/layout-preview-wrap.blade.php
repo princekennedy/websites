@@ -11,7 +11,7 @@
         html, body { overflow: hidden; }
     </style>
 </head>
-<body class="bg-white min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 via-white to-sky-50 min-h-screen">
     {!! $html !!}
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Content;
 use App\Models\ContentCategory;
 use App\Models\Menu;
 use App\Models\User;
@@ -114,6 +115,40 @@ class CmsManagementTest extends TestCase
             'category_id' => $category->id,
             'status' => 'published',
         ]);
+    }
+
+    public function test_category_layout_preview_renders_with_paginated_contents(): void
+    {
+        $this->seed(CmsSeeder::class);
+
+        $admin = User::query()->where('email', 'admin@srhr.test')->firstOrFail();
+        $website = Website::query()->firstOrFail();
+        $category = ContentCategory::query()->firstOrFail();
+
+        Content::query()->create([
+            'website_id' => $website->id,
+            'title' => 'Preview Category Content',
+            'slug' => 'preview-category-content',
+            'summary' => 'Content created for category layout preview regression coverage.',
+            'body' => 'Preview body content.',
+            'content_type' => 'article',
+            'category_id' => $category->id,
+            'status' => 'published',
+            'audience' => 'general',
+            'visibility' => 'public',
+            'published_at' => now(),
+            'created_by' => $admin->id,
+            'updated_by' => $admin->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('cms.layout-preview', [
+            'section' => 'content-categories',
+            'layout' => 'minimal',
+            'category_id' => $category->id,
+        ]));
+
+        $response->assertOk();
+        $response->assertSee('Preview Category Content');
     }
 
     public function test_can_create_menu_and_menu_item(): void

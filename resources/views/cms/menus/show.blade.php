@@ -7,7 +7,7 @@
         <div class="flex items-center gap-2">
             <x-cms.layout-preview-launcher
                 section="menu-items"
-                layout="default"
+                :layout="$menu->normalizedLayoutType()"
                 :options="$menuItemLayoutOptions"
                 :params="['menu_id' => $menu->id]"
                 title="Menu Layout Preview"

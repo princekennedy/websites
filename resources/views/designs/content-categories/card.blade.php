@@ -19,11 +19,11 @@
         <p class="text-slate-500 dark:text-slate-400">No published articles in this topic yet.</p>
       </div>
     @else
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
         @foreach ($contents as $content)
           <a href="{{ route('public.contents.show', $content) }}"
              class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-slate-800 dark:bg-slate-950">
-            <div class="flex flex-1 flex-col p-6">
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
               <span class="rounded-full bg-slate-100 px-3 py-0.5 text-xs font-medium capitalize text-slate-600 self-start dark:bg-slate-800 dark:text-slate-400">
                 {{ str_replace('_', ' ', $content->content_type) }}
               </span>
@@ -31,7 +31,7 @@
                 {{ $content->title }}
               </h2>
               @if ($content->summary)
-                <p class="mt-2 flex-1 text-sm text-slate-500 dark:text-slate-400">{{ Str::limit($content->summary, 120) }}</p>
+                <p class="mt-2 flex-1 text-sm text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($content->summary, 120) }}</p>
               @endif
             </div>
           </a>

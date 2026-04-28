@@ -55,6 +55,7 @@ Route::prefix('cms')
     ->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/layout-preview', [LayoutPreviewController::class, 'show'])->name('layout-preview');
+        Route::post('/layout-preview/default', [LayoutPreviewController::class, 'setDefault'])->name('layout-preview.set-default');
         Route::get('/websites', [WebsiteController::class, 'index'])->name('websites.index');
         Route::post('/websites', [WebsiteController::class, 'store'])->name('websites.store');
         Route::post('/websites/{website}/switch', [WebsiteController::class, 'switch'])->name('websites.switch');

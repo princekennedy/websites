@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Cms;
 
+use App\Enums\CategoryLayoutType;
+use App\Enums\ContentLayoutType;
+use App\Enums\MenuItemLayoutType;
+use App\Enums\MenuLayoutType;
+use App\Enums\SliderLayoutType;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\ContentCategory;
@@ -11,8 +16,10 @@ use App\Models\Slider;
 use App\Support\DesignLayouts;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class LayoutPreviewController extends Controller
 {
@@ -23,6 +30,7 @@ class LayoutPreviewController extends Controller
             : 'content';
 
         $layout = preg_replace('/[^a-z0-9\-]/', '', (string) $request->query('layout', 'default'));
+        $theme = $request->query('theme') === 'dark' ? 'dark' : 'light';
 
         $viewName = "designs.{$section}.{$layout}";
         if (! view()->exists($viewName)) {
@@ -32,8 +40,31 @@ class LayoutPreviewController extends Controller
         $html = view($viewName, $this->sampleData($section))->render();
 
         return response(
-            view('cms.layout-preview-wrap', compact('html'))->render()
+            view('cms.layout-preview-wrap', compact('html', 'theme'))->render()
         );
+    }
+
+    public function setDefault(Request $request): RedirectResponse
+    {
+        [$record, $allowedLayouts, $permission, $targetLabel] = $this->resolveLayoutTarget($request);
+
+        abort_unless($request->user()?->hasCmsPermission($permission), 403);
+
+        $validated = $request->validate([
+            'layout' => ['required', 'string', Rule::in($allowedLayouts)],
+        ]);
+
+        $attributes = [
+            'layout_type' => $validated['layout'],
+        ];
+
+        if (in_array('updated_by', $record->getFillable(), true) && $request->user()?->id) {
+            $attributes['updated_by'] = $request->user()->id;
+        }
+
+        $record->fill($attributes)->save();
+
+        return back()->with('status', $targetLabel.' layout updated.');
     }
 
     /**
@@ -48,6 +79,59 @@ class LayoutPreviewController extends Controller
             'sliders'            => $this->sliderData(),
             default              => [],
         };
+    }
+
+    /**
+     * @return array{0: \Illuminate\Database\Eloquent\Model, 1: array<int, string>, 2: string, 3: string}
+     */
+    private function resolveLayoutTarget(Request $request): array
+    {
+        if ($request->integer('content_id') > 0) {
+            return [
+                Content::query()->findOrFail($request->integer('content_id')),
+                ContentLayoutType::values(),
+                'cms.manage.contents',
+                'Content',
+            ];
+        }
+
+        if ($request->integer('category_id') > 0) {
+            return [
+                ContentCategory::query()->findOrFail($request->integer('category_id')),
+                CategoryLayoutType::values(),
+                'cms.manage.categories',
+                'Category',
+            ];
+        }
+
+        if ($request->integer('slider_id') > 0) {
+            return [
+                Slider::query()->findOrFail($request->integer('slider_id')),
+                SliderLayoutType::values(),
+                'cms.manage.sliders',
+                'Slider',
+            ];
+        }
+
+        if ($request->integer('menu_item_id') > 0) {
+            return [
+                MenuItem::query()->findOrFail($request->integer('menu_item_id')),
+                MenuItemLayoutType::values(),
+                'cms.manage.menus',
+                'Menu item',
+            ];
+        }
+
+        if ($request->integer('menu_id') > 0) {
+            return [
+                Menu::query()->findOrFail($request->integer('menu_id')),
+                MenuLayoutType::values(),
+                'cms.manage.menus',
+                'Menu',
+            ];
+        }
+
+        abort(404);
     }
 
     /**

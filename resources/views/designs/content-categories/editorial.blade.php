@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
+  <div class="mx-auto max-w-7xl px-6 py-12 sm:py-14 lg:px-8">
     <div class="lg:grid lg:grid-cols-[1fr_260px] lg:gap-12">
 
       {{-- Content list --}}
@@ -22,11 +22,11 @@
         @if ($contents->isEmpty())
           <p class="text-slate-500 dark:text-slate-400">No published content in this topic yet.</p>
         @else
-          <div class="space-y-0 divide-y divide-slate-200 dark:divide-slate-800">
+          <div class="mt-6 space-y-0 divide-y divide-slate-200 dark:divide-slate-800 sm:mt-8">
             @foreach ($contents as $content)
               <a href="{{ route('public.contents.show', $content) }}"
-                 class="group flex items-start justify-between gap-6 py-6">
-                <div>
+                 class="group flex flex-col gap-4 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+                <div class="min-w-0 flex-1">
                   <span class="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
                     {{ str_replace('_', ' ', $content->content_type) }}
                   </span>
@@ -34,10 +34,10 @@
                     {{ $content->title }}
                   </h2>
                   @if ($content->summary)
-                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ Str::limit($content->summary, 140) }}</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($content->summary, 140) }}</p>
                   @endif
                 </div>
-                <svg class="mt-2 h-5 w-5 shrink-0 text-slate-300 group-hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <svg class="h-5 w-5 shrink-0 text-slate-300 group-hover:text-indigo-400 sm:mt-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
                 </svg>
               </a>

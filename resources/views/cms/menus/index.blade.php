@@ -38,7 +38,7 @@
                                     <div class="cms-action-group cms-action-group--end">
                                         <x-cms.layout-preview-launcher
                                             section="menu-items"
-                                            layout="default"
+                                            :layout="$menu->normalizedLayoutType()"
                                             :options="$menuItemLayoutOptions"
                                             :params="['menu_id' => $menu->id]"
                                             title="Menu Layout Preview"
@@ -85,7 +85,7 @@
                         <div class="cms-action-group">
                             <x-cms.layout-preview-launcher
                                 section="menu-items"
-                                layout="default"
+                                :layout="$menu->normalizedLayoutType()"
                                 :options="$menuItemLayoutOptions"
                                 :params="['menu_id' => $menu->id]"
                                 title="Menu Layout Preview"

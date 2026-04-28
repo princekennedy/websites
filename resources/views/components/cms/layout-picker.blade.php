@@ -62,7 +62,8 @@
 {{-- ─── Modal ───────────────────────────────────────────────────────────────── --}}
 <div
     id="{{ $pickerId }}-modal"
-    class="fixed inset-0 z-[220] hidden items-center justify-center overflow-y-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-10"
+    class="fixed inset-0 z-[99999] hidden items-start justify-center overflow-y-auto bg-slate-950/82 px-3 py-4 backdrop-blur-sm sm:items-center sm:px-5 sm:py-6"
+    data-picker-modal-root
     role="dialog"
     aria-modal="true"
     aria-labelledby="{{ $pickerId }}-title"
@@ -71,23 +72,23 @@
 >
     {{-- Backdrop --}}
     <div
-        class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+        class="absolute inset-0 bg-slate-950/82"
         onclick="lpClose('{{ $pickerId }}')"
         aria-hidden="true"
     ></div>
 
-    <div class="relative w-full max-w-[min(96vw,1480px)] overflow-hidden rounded-[32px] border border-white/10 bg-slate-950/95 shadow-[0_40px_120px_rgba(2,6,23,0.72)] ring-1 ring-white/10">
-            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(34,211,238,0.12),_transparent_32%)]"></div>
-            <div class="relative max-h-[92vh] overflow-y-auto px-5 pb-6 pt-5 sm:px-7 sm:pb-7 sm:pt-6 lg:px-8 lg:pb-8">
+    <div class="w-full max-w-6xl py-1 sm:py-3">
+        <div class="cms-card cms-gradient-card relative mx-auto flex h-[min(96vh,58rem)] max-h-[calc(100vh-2rem)] w-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 shadow-[0_30px_100px_rgba(0,0,0,0.42)] ring-1 ring-slate-900/10 dark:border-white/10 dark:ring-white/10 sm:max-h-[calc(100vh-3rem)]">
 
             {{-- Modal header --}}
-            <div class="sticky top-0 z-10 mb-6 flex items-start justify-between gap-4 border-b border-white/10 bg-slate-950/90 pb-5 pt-1 backdrop-blur-xl">
+            <div class="shrink-0 border-b border-slate-200 p-4 dark:border-white/10 sm:px-6">
+                <div class="flex items-start justify-between gap-4">
                 <div class="max-w-3xl">
-                    <p class="text-xs font-semibold uppercase tracking-[0.32em] text-sky-300/80">Live Preview Gallery</p>
-                    <h2 id="{{ $pickerId }}-title" class="mt-2 text-2xl font-bold text-white sm:text-3xl">
+                    <p class="text-xs font-semibold uppercase tracking-[0.32em] text-sky-500/80 dark:text-sky-300/80">Live Preview Gallery</p>
+                    <h2 id="{{ $pickerId }}-title" class="mt-2 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
                         Choose a {{ $label }} Layout
                     </h2>
-                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300/80">
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-300">
                         Click <strong class="text-slate-300">Select</strong> on a design to apply it.
                         Previews use real seeded data from this website.
                     </p>
@@ -95,47 +96,35 @@
                 <button
                     type="button"
                     data-lp-close
-                    class="mt-0.5 inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                    class="flex h-10 w-10 items-center justify-center rounded-xl text-2xl leading-none text-slate-400 transition hover:bg-slate-100 hover:text-rose-500 dark:hover:bg-white/10"
                     onclick="lpClose('{{ $pickerId }}')"
                     aria-label="Close layout picker"
                 >
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                    </svg>
-                    Close
+                    <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-
-            <div class="mb-6 rounded-[28px] border border-white/10 bg-white/[0.03] p-4 shadow-[0_20px_40px_rgba(2,6,23,0.18)] sm:p-5">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-white">Current selection</p>
-                        <p class="mt-1 text-sm text-slate-300/75">{{ $currentLabel }}</p>
-                    </div>
-                    <div class="inline-flex items-center gap-2 self-start rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-sky-200">
-                        <span>Code</span>
-                        <span class="rounded-full bg-slate-950/60 px-2 py-0.5 font-mono text-[11px] text-sky-100">{{ $value }}</span>
-                    </div>
                 </div>
             </div>
 
+ 
+
             {{-- Layout cards grid --}}
+            <div class="min-h-0 flex-1 overflow-y-auto px-5 pb-6 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
             <div class="grid gap-6 xl:grid-cols-2">
                 @foreach ($options as $layoutValue => $layoutLabel)
                     @php [$shortName, $shortDesc] = $labelParts($layoutLabel); @endphp
 
                     <div
-                        class="lp-card group overflow-hidden rounded-[28px] border bg-slate-900/85 shadow-[0_20px_45px_rgba(15,23,42,0.28)] ring-1 ring-white/5 transition duration-200 {{ (string) $layoutValue === (string) $value ? 'border-sky-400/90' : 'border-slate-700/80 hover:border-sky-400/50' }}"
+                        class="lp-card group overflow-hidden rounded-[28px] border bg-white shadow-[0_20px_45px_rgba(15,23,42,0.12)] ring-1 ring-slate-950/5 transition duration-200 dark:bg-slate-950/85 dark:ring-white/5 {{ (string) $layoutValue === (string) $value ? 'border-sky-400/90' : 'border-slate-200 hover:border-sky-300 dark:border-white/10 dark:hover:border-sky-400/50' }}"
                         id="{{ $pickerId }}-card-{{ $layoutValue }}"
                         data-layout="{{ $layoutValue }}"
                     >
                         {{-- Scaled iframe preview --}}
                         <div
-                            class="lp-preview-wrapper relative overflow-hidden border-b border-white/10 bg-slate-950"
+                            class="lp-preview-wrapper relative overflow-hidden border-b border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-slate-950"
                             style="height: clamp(320px, 50vh, 560px); min-height: 50vh;"
                             title="Layout preview"
                         >
-                            <div class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 bg-gradient-to-b from-slate-950/60 via-slate-950/10 to-transparent"></div>
+                            <div class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 bg-gradient-to-b from-white/75 via-white/15 to-transparent dark:from-slate-950/60 dark:via-slate-950/10"></div>
                             <iframe
                                 data-src="{{ route('cms.layout-preview', ['section' => $section, 'layout' => $layoutValue]) }}"
                                 style="position: absolute; top: 0; left: 50%; width: 1200px; height: 700px; transform-origin: top center; border: none; pointer-events: none;"
@@ -143,8 +132,8 @@
                             ></iframe>
 
                             {{-- Spinner shown until iframe loads --}}
-                            <div class="lp-spinner absolute inset-0 flex items-center justify-center bg-slate-900/80">
-                                <svg class="h-8 w-8 animate-spin text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <div class="lp-spinner absolute inset-0 flex items-center justify-center bg-white/88 backdrop-blur-sm dark:bg-slate-950/88">
+                                <svg class="h-8 w-8 animate-spin text-slate-400 dark:text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                 </svg>
@@ -152,16 +141,16 @@
                         </div>
 
                         {{-- Card footer --}}
-                        <div class="flex items-center justify-between gap-4 bg-gradient-to-b from-slate-900 to-slate-950 p-5">
+                        <div class="flex items-center justify-between gap-4 bg-gradient-to-b from-white to-slate-50 p-5 dark:from-slate-900 dark:to-slate-950">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
-                                    <p class="font-semibold text-white truncate">{{ $shortName }}</p>
+                                    <p class="truncate font-semibold text-slate-900 dark:text-white">{{ $shortName }}</p>
                                     @if ((string) $layoutValue === (string) $value)
-                                        <span class="shrink-0 rounded-full bg-sky-500/20 px-2 py-0.5 text-xs font-semibold text-sky-400">Current</span>
+                                        <span class="shrink-0 rounded-full bg-sky-500/15 px-2 py-0.5 text-xs font-semibold text-sky-700 dark:bg-sky-500/20 dark:text-sky-400">Current</span>
                                     @endif
                                 </div>
                                 @if ($shortDesc)
-                                    <p class="mt-0.5 truncate text-sm text-slate-400">{{ $shortDesc }}</p>
+                                    <p class="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">{{ $shortDesc }}</p>
                                 @endif
                             </div>
                             <button
@@ -180,6 +169,7 @@
             {{-- Bottom spacer so last cards aren't flush with viewport bottom --}}
             <div class="h-8"></div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -194,6 +184,20 @@
         openId: null,
         previousActiveElement: null,
     };
+
+    function hoistPickerModals() {
+        document.querySelectorAll('[data-picker-modal-root]').forEach(function (modal) {
+            if (modal.parentElement === document.body) return;
+            document.body.appendChild(modal);
+        });
+    }
+
+    function previewUrlWithTheme(url) {
+        const themedUrl = new window.URL(url, window.location.origin);
+        themedUrl.searchParams.set('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+
+        return themedUrl.toString();
+    }
 
     // Scale each iframe inside a .lp-preview-wrapper to fit its container.
     function scalePreview(wrapper) {
@@ -215,23 +219,31 @@
         const modal = document.getElementById(pickerId + '-modal');
         if (!modal) return;
 
+        const activeTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+
         modal.querySelectorAll('.lp-preview-wrapper').forEach(function (wrapper) {
             scalePreview(wrapper);
 
             const iframe = wrapper.querySelector('iframe[data-src]');
             if (!iframe) return;
 
-            // Already loaded.
-            if (iframe.dataset.loaded === '1') return;
+            if (iframe.dataset.loaded === '1' && iframe.dataset.theme === activeTheme) return;
 
-            iframe.src = iframe.dataset.src;
+            iframe.src = previewUrlWithTheme(iframe.dataset.src);
             iframe.dataset.loaded = '1';
+            iframe.dataset.theme = activeTheme;
 
             iframe.addEventListener('load', function () {
                 const spinner = wrapper.querySelector('.lp-spinner');
                 if (spinner) spinner.remove();
             }, { once: true });
         });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hoistPickerModals, { once: true });
+    } else {
+        hoistPickerModals();
     }
 
     window.lpOpen = function (pickerId) {

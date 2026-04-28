@@ -25,11 +25,11 @@
         <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400">Check back shortly for articles in this topic.</p>
       </div>
     @else
-      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
         @foreach ($contents as $content)
           <a href="{{ route('public.contents.show', $content) }}"
              class="group flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition hover:shadow-lg hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-950">
-            <div class="flex flex-1 flex-col p-8">
+            <div class="flex flex-1 flex-col p-6 sm:p-8">
               <span class="rounded-full bg-slate-100 px-3 py-0.5 text-xs font-medium capitalize text-slate-600 self-start dark:bg-slate-800 dark:text-slate-400">
                 {{ str_replace('_', ' ', $content->content_type) }}
               </span>
@@ -38,7 +38,7 @@
               </h2>
               @if ($content->summary)
                 <p class="mt-3 flex-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                  {{ Str::limit($content->summary, 130) }}
+                  {{ \Illuminate\Support\Str::limit($content->summary, 130) }}
                 </p>
               @endif
               <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">

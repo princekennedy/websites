@@ -17,9 +17,7 @@
 @endphp
 
 {{-- ─── Visible display + trigger button ──────────────────────────────────── --}}
-<div class="mt-2 space-y-2" data-picker-id="{{ $pickerId }}" data-select-id="{{ $selectId }}">
-    <div class="flex items-stretch gap-2">
-
+<div class="mt-2 space-y-3" data-picker-id="{{ $pickerId }}" data-select-id="{{ $selectId }}">
     {{-- Hidden native select (submitted with the form) --}}
     <select id="{{ $selectId }}" name="{{ $name }}" class="sr-only" aria-hidden="true" tabindex="-1">
         @foreach ($options as $optVal => $optLabel)
@@ -27,65 +25,77 @@
         @endforeach
     </select>
 
-    {{-- Display pill showing current selection --}}
-    <div class="flex flex-1 items-center gap-3 rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 dark:border-white/10 dark:bg-slate-950/30">
-        <svg class="h-4 w-4 shrink-0 text-slate-400 dark:text-stone-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"/>
-        </svg>
-        <span class="flex-1 text-sm text-slate-700 dark:text-stone-200 lp-display-label">{{ $currentLabel }}</span>
-        <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-mono text-slate-400 dark:bg-white/5 dark:text-stone-500 lp-display-value">{{ $value }}</span>
-    </div>
+    <div class="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/50 ring-1 ring-slate-950/5 transition dark:border-white/10 dark:bg-slate-950/35 dark:shadow-none dark:ring-white/10">
+        <button
+            type="button"
+            class="group flex w-full items-center gap-4 p-4 text-left transition hover:bg-slate-50/80 focus:outline-none focus:ring-2 focus:ring-sky-300/50 dark:hover:bg-white/[0.04] sm:p-5"
+            onclick="lpOpen('{{ $pickerId }}')"
+            aria-haspopup="dialog"
+            aria-controls="{{ $pickerId }}-modal"
+        >
+            <span class="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-sky-700 transition group-hover:bg-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:group-hover:bg-sky-500/15">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"/>
+                </svg>
+            </span>
 
-    {{-- Preview / browse button --}}
-    <button
-        type="button"
-        class="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-100 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20"
-        onclick="lpOpen('{{ $pickerId }}')"
-        aria-haspopup="dialog"
-    >
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-        </svg>
-        Preview Layouts
-    </button>
+            <span class="min-w-0 flex-1">
+                <span class="flex flex-wrap items-center gap-2">
+                    <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-stone-400">Current {{ $label }}</span>
+                    <span class="lp-display-value inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-stone-400">{{ $value }}</span>
+                </span>
+                <span class="lp-display-label mt-2 block truncate text-base font-semibold text-slate-900 dark:text-white sm:text-lg">{{ $currentLabel }}</span>
+                <span class="mt-1 block text-sm text-slate-500 dark:text-stone-400">Open the layout gallery to compare live previews before saving this section.</span>
+            </span>
+
+            <span class="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition group-hover:border-sky-200 group-hover:bg-sky-50 group-hover:text-sky-700 dark:border-white/10 dark:bg-white/5 dark:text-stone-200 dark:group-hover:border-sky-400/30 dark:group-hover:bg-sky-500/10 dark:group-hover:text-sky-300">
+                Browse Layouts
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                </svg>
+            </span>
+        </button>
     </div>
-    <p class="hidden text-xs font-medium text-emerald-600 dark:text-emerald-400 lp-selected-hint"></p>
+    <p class="lp-selected-hint hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"></p>
 </div>
 
 {{-- ─── Modal ───────────────────────────────────────────────────────────────── --}}
 <div
     id="{{ $pickerId }}-modal"
-    class="fixed inset-0 z-[220] hidden isolate"
+    class="fixed inset-0 z-[220] hidden items-center justify-center overflow-y-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-10"
     role="dialog"
     aria-modal="true"
     aria-labelledby="{{ $pickerId }}-title"
+    aria-hidden="true"
+    tabindex="-1"
 >
     {{-- Backdrop --}}
     <div
-        class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+        class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
         onclick="lpClose('{{ $pickerId }}')"
         aria-hidden="true"
     ></div>
 
-    <div class="relative flex min-h-full items-center justify-center p-4 sm:p-6">
-        <div class="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-[0_30px_80px_rgba(0,0,0,0.65)]">
-            <div class="max-h-[90vh] overflow-y-auto p-5 sm:p-6 lg:p-7">
+    <div class="relative w-full max-w-[min(96vw,1480px)] overflow-hidden rounded-[32px] border border-white/10 bg-slate-950/95 shadow-[0_40px_120px_rgba(2,6,23,0.72)] ring-1 ring-white/10">
+            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(34,211,238,0.12),_transparent_32%)]"></div>
+            <div class="relative max-h-[92vh] overflow-y-auto px-5 pb-6 pt-5 sm:px-7 sm:pb-7 sm:pt-6 lg:px-8 lg:pb-8">
 
             {{-- Modal header --}}
-            <div class="mb-6 flex items-start justify-between gap-4 border-b border-slate-800 pb-5">
-                <div>
-                    <h2 id="{{ $pickerId }}-title" class="text-2xl font-bold text-white">
+            <div class="sticky top-0 z-10 mb-6 flex items-start justify-between gap-4 border-b border-white/10 bg-slate-950/90 pb-5 pt-1 backdrop-blur-xl">
+                <div class="max-w-3xl">
+                    <p class="text-xs font-semibold uppercase tracking-[0.32em] text-sky-300/80">Live Preview Gallery</p>
+                    <h2 id="{{ $pickerId }}-title" class="mt-2 text-2xl font-bold text-white sm:text-3xl">
                         Choose a {{ $label }} Layout
                     </h2>
-                    <p class="mt-1 text-sm text-slate-400">
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300/80">
                         Click <strong class="text-slate-300">Select</strong> on a design to apply it.
                         Previews use real seeded data from this website.
                     </p>
                 </div>
                 <button
                     type="button"
-                    class="mt-0.5 flex shrink-0 items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+                    data-lp-close
+                    class="mt-0.5 inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                     onclick="lpClose('{{ $pickerId }}')"
                     aria-label="Close layout picker"
                 >
@@ -96,22 +106,36 @@
                 </button>
             </div>
 
+            <div class="mb-6 rounded-[28px] border border-white/10 bg-white/[0.03] p-4 shadow-[0_20px_40px_rgba(2,6,23,0.18)] sm:p-5">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Current selection</p>
+                        <p class="mt-1 text-sm text-slate-300/75">{{ $currentLabel }}</p>
+                    </div>
+                    <div class="inline-flex items-center gap-2 self-start rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-sky-200">
+                        <span>Code</span>
+                        <span class="rounded-full bg-slate-950/60 px-2 py-0.5 font-mono text-[11px] text-sky-100">{{ $value }}</span>
+                    </div>
+                </div>
+            </div>
+
             {{-- Layout cards grid --}}
-            <div class="grid gap-6 md:grid-cols-2">
+            <div class="grid gap-6 xl:grid-cols-2">
                 @foreach ($options as $layoutValue => $layoutLabel)
                     @php [$shortName, $shortDesc] = $labelParts($layoutLabel); @endphp
 
                     <div
-                        class="lp-card group overflow-hidden rounded-3xl border-2 transition duration-200 {{ (string) $layoutValue === (string) $value ? 'border-sky-400' : 'border-slate-700 hover:border-sky-400/50' }}"
+                        class="lp-card group overflow-hidden rounded-[28px] border bg-slate-900/85 shadow-[0_20px_45px_rgba(15,23,42,0.28)] ring-1 ring-white/5 transition duration-200 {{ (string) $layoutValue === (string) $value ? 'border-sky-400/90' : 'border-slate-700/80 hover:border-sky-400/50' }}"
                         id="{{ $pickerId }}-card-{{ $layoutValue }}"
                         data-layout="{{ $layoutValue }}"
                     >
                         {{-- Scaled iframe preview --}}
                         <div
-                            class="lp-preview-wrapper relative overflow-hidden bg-slate-900"
-                            style="height: max(280px, 50vh); min-height: 50vh;"
+                            class="lp-preview-wrapper relative overflow-hidden border-b border-white/10 bg-slate-950"
+                            style="height: clamp(320px, 50vh, 560px); min-height: 50vh;"
                             title="Layout preview"
                         >
+                            <div class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 bg-gradient-to-b from-slate-950/60 via-slate-950/10 to-transparent"></div>
                             <iframe
                                 data-src="{{ route('cms.layout-preview', ['section' => $section, 'layout' => $layoutValue]) }}"
                                 style="position: absolute; top: 0; left: 50%; width: 1200px; height: 700px; transform-origin: top center; border: none; pointer-events: none;"
@@ -128,7 +152,7 @@
                         </div>
 
                         {{-- Card footer --}}
-                        <div class="flex items-center justify-between gap-4 bg-slate-900 p-5">
+                        <div class="flex items-center justify-between gap-4 bg-gradient-to-b from-slate-900 to-slate-950 p-5">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
                                     <p class="font-semibold text-white truncate">{{ $shortName }}</p>
@@ -142,7 +166,7 @@
                             </div>
                             <button
                                 type="button"
-                                class="inline-flex shrink-0 items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 px-5 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:from-sky-600 hover:to-cyan-600 {{ (string) $layoutValue === (string) $value ? 'opacity-50 cursor-default' : '' }}"
+                                class="inline-flex shrink-0 items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:from-sky-400 hover:via-cyan-400 hover:to-teal-300 {{ (string) $layoutValue === (string) $value ? 'cursor-default opacity-50' : '' }}"
                                 onclick="lpSelect('{{ $pickerId }}', '{{ $layoutValue }}', {{ json_encode($layoutLabel) }})"
                                 {{ (string) $layoutValue === (string) $value ? 'disabled' : '' }}
                             >
@@ -156,7 +180,6 @@
             {{-- Bottom spacer so last cards aren't flush with viewport bottom --}}
             <div class="h-8"></div>
             </div>
-        </div>
     </div>
 </div>
 
@@ -166,19 +189,25 @@
 (function () {
     const PREVIEW_WIDTH = 1200;
     const PREVIEW_HEIGHT = 700;
+    const PREVIEW_MIN_HEIGHT = 320;
+    const pickerState = {
+        openId: null,
+        previousActiveElement: null,
+    };
 
     // Scale each iframe inside a .lp-preview-wrapper to fit its container.
     function scalePreview(wrapper) {
         const iframe = wrapper.querySelector('iframe');
         if (!iframe) return;
 
-        const minHeight = Math.max(Math.round(window.innerHeight * 0.5), 280);
-        const widthScale = wrapper.offsetWidth / PREVIEW_WIDTH;
-        const heightScale = minHeight / PREVIEW_HEIGHT;
+        const targetHeight = Math.max(Math.round(window.innerHeight * 0.5), PREVIEW_MIN_HEIGHT);
+        const targetWidth = Math.min(wrapper.offsetWidth, Math.round(window.innerWidth * 0.5));
+        const widthScale = targetWidth / PREVIEW_WIDTH;
+        const heightScale = targetHeight / PREVIEW_HEIGHT;
         const scale = Math.max(widthScale, heightScale);
 
         iframe.style.transform = 'translateX(-50%) scale(' + scale + ')';
-        wrapper.style.height = Math.max(Math.round(PREVIEW_HEIGHT * scale), minHeight) + 'px';
+        wrapper.style.height = targetHeight + 'px';
     }
 
     // Load the iframes inside a modal (lazy — only when modal opens).
@@ -208,17 +237,47 @@
     window.lpOpen = function (pickerId) {
         const modal = document.getElementById(pickerId + '-modal');
         if (!modal) return;
+
+        if (pickerState.openId && pickerState.openId !== pickerId) {
+            window.lpClose(pickerState.openId);
+        }
+
+        pickerState.previousActiveElement = document.activeElement && document.activeElement.nodeType === 1
+            ? document.activeElement
+            : null;
+        pickerState.openId = pickerId;
+
+        modal.setAttribute('aria-hidden', 'false');
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
         // Use rAF so the layout is painted before we measure widths for scaling.
-        requestAnimationFrame(function () { loadPreviews(pickerId); });
+        requestAnimationFrame(function () {
+            loadPreviews(pickerId);
+            const closeButton = modal.querySelector('[data-lp-close]');
+            if (closeButton && typeof closeButton.focus === 'function') {
+                closeButton.focus();
+            } else {
+                modal.focus();
+            }
+        });
     };
 
     window.lpClose = function (pickerId) {
         const modal = document.getElementById(pickerId + '-modal');
         if (!modal) return;
+        modal.setAttribute('aria-hidden', 'true');
+        modal.classList.remove('flex');
         modal.classList.add('hidden');
         document.body.style.overflow = '';
+
+        if (pickerState.openId === pickerId) {
+            pickerState.openId = null;
+            if (pickerState.previousActiveElement && typeof pickerState.previousActiveElement.focus === 'function') {
+                pickerState.previousActiveElement.focus();
+            }
+            pickerState.previousActiveElement = null;
+        }
     };
 
     window.lpSelect = function (pickerId, value, label) {
@@ -245,8 +304,8 @@
         if (modal) {
             modal.querySelectorAll('.lp-card').forEach(function (card) {
                 const isSelected = card.dataset.layout === value;
-                card.classList.toggle('border-sky-400',  isSelected);
-                card.classList.toggle('border-white/10', !isSelected);
+                card.classList.toggle('border-sky-400/90', isSelected);
+                card.classList.toggle('border-slate-700/80', !isSelected);
 
                 const btn = card.querySelector('button[onclick*="lpSelect"]');
                 if (!btn) return;

@@ -15,7 +15,7 @@
         @endunless
     </head>
     <body class="cms-shell h-screen overflow-hidden transition-colors">
-        <div class="relative z-10 flex h-screen flex-col">
+        <div class="relative flex h-screen flex-col">
             <header class="shrink-0 z-50 px-4 py-4 sm:px-6 lg:px-8">
                 <div class="cms-panel cms-gradient-card mx-auto max-w-[96rem] px-5 py-4 sm:px-6 lg:px-8">
                     <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">

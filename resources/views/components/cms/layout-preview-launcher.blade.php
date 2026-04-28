@@ -33,6 +33,7 @@
 <div
     id="{{ $previewId }}"
     class="fixed inset-0 z-[99999] hidden items-center justify-center bg-slate-950/82 backdrop-blur-sm px-3 py-4 sm:px-5 sm:py-6"
+    data-preview-modal-root
     role="dialog"
     aria-modal="true"
     aria-labelledby="{{ $previewId }}-title"
@@ -123,6 +124,16 @@
         previousActiveElement: null,
     };
 
+    const hoistPreviewModals = () => {
+        document.querySelectorAll('[data-preview-modal-root]').forEach((modal) => {
+            if (modal.parentElement === document.body) {
+                return;
+            }
+
+            document.body.appendChild(modal);
+        });
+    };
+
     const showLoader = (id) => {
         const modal = document.getElementById(id);
         const loader = modal?.querySelector('[data-preview-loader]');
@@ -145,6 +156,12 @@
             button.classList.toggle('active', isActive);
         });
     };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hoistPreviewModals, { once: true });
+    } else {
+        hoistPreviewModals();
+    }
 
     window.cmsPreviewOpen = (id, url, layout) => {
         const modal = document.getElementById(id);

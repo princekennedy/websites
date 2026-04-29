@@ -89,7 +89,7 @@
                         Choose a {{ $label }} Layout
                     </h2>
                     <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-300">
-                        Click <strong class="text-slate-300">Select</strong> on a design to apply it.
+                        Click <strong class="text-slate-900 dark:text-white">Select</strong> on a design to apply it.
                         Previews use real seeded data from this website.
                     </p>
                 </div>
@@ -109,7 +109,7 @@
 
             {{-- Layout cards grid --}}
             <div class="min-h-0 flex-1 overflow-y-auto px-5 pb-6 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
-            <div class="grid gap-6 xl:grid-cols-2">
+            <div class="grid gap-5 2xl:grid-cols-2">
                 @foreach ($options as $layoutValue => $layoutLabel)
                     @php [$shortName, $shortDesc] = $labelParts($layoutLabel); @endphp
 
@@ -121,7 +121,7 @@
                         {{-- Scaled iframe preview --}}
                         <div
                             class="lp-preview-wrapper relative overflow-hidden border-b border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-slate-950"
-                            style="height: clamp(320px, 50vh, 560px); min-height: 50vh;"
+                            style="height: clamp(220px, 34vh, 360px); min-height: 220px;"
                             title="Layout preview"
                         >
                             <div class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 bg-gradient-to-b from-white/75 via-white/15 to-transparent dark:from-slate-950/60 dark:via-slate-950/10"></div>
@@ -141,21 +141,21 @@
                         </div>
 
                         {{-- Card footer --}}
-                        <div class="flex items-center justify-between gap-4 bg-gradient-to-b from-white to-slate-50 p-5 dark:from-slate-900 dark:to-slate-950">
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <p class="truncate font-semibold text-slate-900 dark:text-white">{{ $shortName }}</p>
+                        <div class="flex flex-col gap-4 bg-gradient-to-b from-white to-slate-50 p-5 dark:from-slate-900 dark:to-slate-950 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <p class="font-semibold text-slate-900 dark:text-white">{{ $shortName }}</p>
                                     @if ((string) $layoutValue === (string) $value)
                                         <span class="shrink-0 rounded-full bg-sky-500/15 px-2 py-0.5 text-xs font-semibold text-sky-700 dark:bg-sky-500/20 dark:text-sky-400">Current</span>
                                     @endif
                                 </div>
                                 @if ($shortDesc)
-                                    <p class="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">{{ $shortDesc }}</p>
+                                    <p class="mt-0.5 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ $shortDesc }}</p>
                                 @endif
                             </div>
                             <button
                                 type="button"
-                                class="inline-flex shrink-0 items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:from-sky-400 hover:via-cyan-400 hover:to-teal-300 {{ (string) $layoutValue === (string) $value ? 'cursor-default opacity-50' : '' }}"
+                                class="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:from-sky-400 hover:via-cyan-400 hover:to-teal-300 sm:w-auto {{ (string) $layoutValue === (string) $value ? 'cursor-default opacity-50' : '' }}"
                                 onclick="lpSelect('{{ $pickerId }}', '{{ $layoutValue }}', {{ json_encode($layoutLabel) }})"
                                 {{ (string) $layoutValue === (string) $value ? 'disabled' : '' }}
                             >
@@ -179,7 +179,8 @@
 (function () {
     const PREVIEW_WIDTH = 1200;
     const PREVIEW_HEIGHT = 700;
-    const PREVIEW_MIN_HEIGHT = 320;
+    const PREVIEW_MIN_HEIGHT = 220;
+    const PREVIEW_MAX_HEIGHT = 360;
     const pickerState = {
         openId: null,
         previousActiveElement: null,
@@ -204,11 +205,11 @@
         const iframe = wrapper.querySelector('iframe');
         if (!iframe) return;
 
-        const targetHeight = Math.max(Math.round(window.innerHeight * 0.5), PREVIEW_MIN_HEIGHT);
-        const targetWidth = Math.min(wrapper.offsetWidth, Math.round(window.innerWidth * 0.5));
+        const targetHeight = Math.max(Math.min(Math.round(window.innerHeight * 0.34), PREVIEW_MAX_HEIGHT), PREVIEW_MIN_HEIGHT);
+        const targetWidth = wrapper.clientWidth;
         const widthScale = targetWidth / PREVIEW_WIDTH;
         const heightScale = targetHeight / PREVIEW_HEIGHT;
-        const scale = Math.max(widthScale, heightScale);
+        const scale = Math.min(widthScale, heightScale);
 
         iframe.style.transform = 'translateX(-50%) scale(' + scale + ')';
         wrapper.style.height = targetHeight + 'px';

@@ -30,7 +30,7 @@
             <textarea id="description" name="description" rows="5" class="cms-textarea mt-2">{{ old('description', $category->description) }}</textarea>
         </div>
 
-        <div class="grid gap-5 md:grid-cols-2">
+        <div class="grid gap-5 md:grid-cols-1">
             <div>
                 <label for="visibility" class="text-sm font-medium text-slate-900 dark:text-stone-200">Visibility</label>
                 <select id="visibility" name="visibility" class="cms-select mt-2">

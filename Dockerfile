@@ -9,6 +9,7 @@ COPY resources ./resources
 COPY public ./public
 COPY vite.config.js ./
 
+RUN npm install
 RUN npm run build
 
 FROM composer:2 AS vendor

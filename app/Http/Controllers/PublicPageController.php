@@ -6,12 +6,18 @@ use App\Models\Content;
 use App\Models\Menu;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PublicPageController extends Controller
 {
     public function home(): View
     {
+        if (! $this->hasPublicSchema()) {
+            return $this->emptyPage();
+        }
+
         $menu = $this->publicMenuQuery()
             ->where('slug', 'home')
             ->first();
@@ -22,7 +28,13 @@ class PublicPageController extends Controller
 
         abort_if($menu === null, 404);
 
-        return $this->renderPage($menu);
+        try {
+            return $this->renderPage($menu);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->emptyPage($menu);
+        }
     }
 
     public function show(Menu $menu): View
@@ -34,7 +46,30 @@ class PublicPageController extends Controller
             404
         );
 
-        return $this->renderPage($menu);
+        try {
+            return $this->renderPage($menu);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->emptyPage($menu);
+        }
+    }
+
+    private function hasPublicSchema(): bool
+    {
+        return Schema::hasTable('menus') && Schema::hasTable('contents');
+    }
+
+    private function emptyPage(?Menu $menu = null): View
+    {
+        return view('page', [
+            'pageTemplate' => 'menu-show',
+            'menu' => $menu,
+            'menuSlider' => null,
+            'primaryContent' => null,
+            'pageContents' => collect(),
+            'pageCategories' => collect(),
+        ]);
     }
 
     private function renderPage(Menu $menu): View

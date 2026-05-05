@@ -6,21 +6,37 @@ use App\Models\Content;
 use App\Models\Menu;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PublicMenuPageController extends Controller
 {
     public function show(string $menuItemName): View
     {
-        $item = Menu::query()->items()
-            ->where('is_active', true)
-            ->whereIn('visibility', $this->allowedVisibilities())
-            ->get()
-            ->first(fn (Menu $candidate): bool => $candidate->publicPageSlug() === $menuItemName);
+        abort_unless(Schema::hasTable('menus') && Schema::hasTable('contents'), 404);
+
+        try {
+            $item = Menu::query()->items()
+                ->where('is_active', true)
+                ->whereIn('visibility', $this->allowedVisibilities())
+                ->get()
+                ->first(fn (Menu $candidate): bool => $candidate->publicPageSlug() === $menuItemName);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            abort(404);
+        }
 
         abort_if($item === null, 404);
 
-        [$categories, $contents, $context] = $this->resolvePageData($item);
+        try {
+            [$categories, $contents, $context] = $this->resolvePageData($item);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            abort(404);
+        }
 
         return view('page', [
             'pageTemplate' => 'menu-item-show',

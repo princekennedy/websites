@@ -20,8 +20,11 @@ use App\Models\Menu;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 Route::bind('category', function (string $value): Content {
+    abort_unless(Schema::hasTable('contents'), 404);
+
     $query = Content::query()->categories();
 
     return is_numeric($value)
@@ -30,6 +33,8 @@ Route::bind('category', function (string $value): Content {
 });
 
 Route::bind('item', function (string $value): Menu {
+    abort_unless(Schema::hasTable('menus'), 404);
+
     $query = Menu::query()->items();
 
     return is_numeric($value)

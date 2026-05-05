@@ -229,7 +229,7 @@ class AppDataController extends Controller
 
         return [
             [
-                'image' => asset('seed/hero-slide-1.svg'),
+                'image' => asset('seed/hero-slide-1.png'),
                 'kicker' => 'Modern digital experiences',
                 'title' => 'Build a beautiful online presence that grows your brand',
                 'description' => 'Launch faster with a clean landing page, elegant navigation, and a polished image slider that makes your business stand out.',
@@ -239,7 +239,7 @@ class AppDataController extends Controller
                 ],
             ],
             [
-                'image' => asset('seed/hero-slide-2.svg'),
+                'image' => asset('seed/hero-slide-2.png'),
                 'kicker' => 'Creative and responsive',
                 'title' => 'Design that looks premium on every screen',
                 'description' => 'Use Tailwind CSS to create responsive layouts, dropdown menus, and eye-catching sections with minimal effort.',
@@ -249,7 +249,7 @@ class AppDataController extends Controller
                 ],
             ],
             [
-                'image' => asset('seed/hero-slide-3.svg'),
+                'image' => asset('seed/hero-slide-3.png'),
                 'kicker' => 'Simple. Elegant. Effective.',
                 'title' => 'Showcase your services with confidence',
                 'description' => 'Present your products, services, and value clearly with a page structure that is clean, modern, and conversion-focused.',

@@ -69,7 +69,7 @@
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                     <div class="flex max-w-4xl gap-5">
                         <div class="hidden w-60 shrink-0 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 p-2 dark:border-white/10 dark:bg-slate-950/30 md:block">
-                            <img src="{{ $slider->imageUrl() ?: asset('seed/hero-slide-1.svg') }}" alt="{{ $slider->title }}" class="h-36 w-full rounded-2xl object-cover">
+                            <img src="{{ $slider->imageUrl() ?: asset('seed/hero-slide-1.png') }}" alt="{{ $slider->title }}" class="h-36 w-full rounded-2xl object-cover">
                         </div>
                         <div>
                             <div class="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-stone-400">

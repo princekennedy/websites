@@ -131,7 +131,7 @@ class Slider extends Model implements HasMedia
             'title' => $this->title,
             'kicker' => $this->kicker,
             'desc' => $this->caption,
-            'image' => $this->imageUrl() ?: asset('seed/hero-slide-1.svg'),
+            'image' => $this->imageUrl() ?: asset('seed/hero-slide-1.png'),
             'buttons' => $buttons,
         ];
     }

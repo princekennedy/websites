@@ -103,7 +103,7 @@ class SliderItem extends Model implements HasMedia
             'title' => $this->title,
             'kicker' => $this->kicker ?: $slider?->kicker,
             'desc' => $this->caption,
-            'image' => $this->imageUrl() ?: $slider?->imageUrl() ?: asset('seed/hero-slide-1.svg'),
+            'image' => $this->imageUrl() ?: $slider?->imageUrl() ?: asset('seed/hero-slide-1.png'),
             'buttons' => $buttons,
         ];
     }

@@ -42,6 +42,8 @@ Notes:
 - The sample Docker env enables `APP_DEBUG` and sends Laravel logs to both stderr and `storage/logs/laravel.log`, so container logs show the actual exception during debugging.
 - Uploaded media is persisted in the named Docker volume `storage_data`.
 - Static uploads are served by nginx through `/storage/`.
+- On container startup, the PHP entrypoint ensures the Laravel `public/storage` symlink exists by running `php artisan storage:link --force --no-interaction` when needed.
+- If `APP_KEY` is missing at runtime, the PHP entrypoint generates one before Laravel boots so the container does not fail with the encryption key error.
 - The queue worker and scheduler run as separate containers using the same application image.
 - For first deployment, replace the sample `DOCKER_APP_KEY` with a real key.
 

@@ -41,6 +41,9 @@ services:
       dockerfile: Dockerfile
       target: app
     restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
     command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=90"]
     environment:
       APP_NAME: ${DOCKER_APP_NAME:-SRHR}
@@ -70,6 +73,9 @@ services:
       dockerfile: Dockerfile
       target: app
     restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
     command: ["sh", "-lc", "while true; do php artisan schedule:run --no-interaction -v; sleep 60; done"]
     environment:
       APP_NAME: ${DOCKER_APP_NAME:-SRHR}

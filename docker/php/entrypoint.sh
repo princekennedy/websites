@@ -4,12 +4,23 @@ set -eu
 cd /var/www/html
 
 mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
+mkdir -p storage/app/public
 chown -R www-data:www-data storage bootstrap/cache || true
+
+if [ -z "${APP_KEY:-}" ]; then
+    echo "[entrypoint] APP_KEY is missing; generating a runtime key"
+    export APP_KEY="$(php artisan key:generate --show --no-interaction)"
+fi
 
 if [ "${DB_CONNECTION:-}" = "sqlite" ] && [ -n "${DB_DATABASE:-}" ]; then
     mkdir -p "$(dirname "$DB_DATABASE")"
     touch "$DB_DATABASE"
     chown -R www-data:www-data "$(dirname "$DB_DATABASE")" || true
+fi
+
+if [ ! -L public/storage ]; then
+    echo "[entrypoint] ensuring public storage symlink"
+    php artisan storage:link --force --no-interaction || true
 fi
 
 if [ "${CACHE_LARAVEL_CONFIG:-true}" = "true" ]; then

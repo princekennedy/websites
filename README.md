@@ -20,15 +20,14 @@ Files added for deployment:
 
 - `Dockerfile`
 - `compose.yaml`
-- `.env.docker.example`
 - `docker/nginx/default.conf`
 - `docker/php/entrypoint.sh`
 - `docker/php/conf.d/app.ini`
 
 Basic deployment flow:
 
-1. Create a dedicated Docker env file from `.env.docker.example`.
-2. Start the stack with `docker compose --env-file .env.docker.example up --build -d`.
+1. Optionally create a dedicated Docker env file such as `.env.docker` if you want to override the `DOCKER_*` values defined in `compose.yaml`.
+2. Start the stack with `docker compose up --build -d`.
 3. The `web` service will run `php artisan migrate --seed --force` automatically when both `DOCKER_RUN_MIGRATIONS=true` and `DOCKER_RUN_SEEDERS=true`.
 4. The public app will be available on `http://localhost` or the port set by `DOCKER_WEB_PORT`.
 
@@ -49,8 +48,8 @@ Notes:
 
 To inspect runtime errors in Docker:
 
-1. Run `docker compose --env-file .env.docker.example logs -f web` to stream Laravel and nginx output from the web container.
-2. If you need the file-based Laravel log too, run `docker compose --env-file .env.docker.example exec web tail -f storage/logs/laravel.log`.
+1. Run `docker compose logs -f web` to stream Laravel and nginx output from the web container.
+2. If you need the file-based Laravel log too, run `docker compose exec web tail -f storage/logs/laravel.log`.
 3. After debugging, set `DOCKER_APP_DEBUG=false` again before treating the stack as production-like.
 
 ## About Laravel
